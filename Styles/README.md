@@ -1,7 +1,16 @@
 # The GoatQuest viewer
 
 How GoatQuest presents the running guide: one compact, flat panel for the
-current step and its objectives, plus navigation. **Options → Guide Viewer**:
+current step and its objectives, plus navigation. **Options → Step Display →
+Number of steps shown** includes up to four following steps with their full
+objectives.
+
+Right-click a current objective or an **Along the way** objective to open its
+step menu (skip, waypoint, completion and quest actions). The current step's
+heading and blank space use its primary objective. Following steps remain
+previews, as in the stock viewer.
+
+**Options → Guide Viewer**:
 
 | Option | What it does |
 |---|---|

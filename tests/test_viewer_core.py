@@ -52,11 +52,47 @@ assert(l1.text=="Kill Defias Trapper" and l1.counted and l1.done==9 and l1.neede
 assert(l1.quest=="The People's Militia" and l1.label=="Defias Trapper")
 assert(l1.tip=="West of Sentinel Hill. Bandanas drop from both.")
 assert(math.abs(l1.fraction-0.6)<1e-9)
-assert(m.primary==1 and m.counted==nil and m.upcoming==nil)
+assert(m.primary==1 and m.counted==nil and #m.upcoming==0)
 assert(#m.along==1 and m.along[1].label=="Red Leather Bandana" and m.along[1].sticky,
 	"completed sticky goals are dropped, open ones kept")
 assert(m.prev.text=="Accept Red Leather Bandanas" and m.next.text=="Loot Furlbrow's Pocket Watch")
 assert(m.waypoint and math.abs(m.waypoint.x-48.4)<1e-9 and math.abs(m.waypoint.y-45.4)<1e-9 and m.waypoint.zone=="Westfall")
+
+-- The selected count includes the current step and preserves full future goals.
+for count=1,5 do
+	GQ.db.profile.showcountsteps = count
+	local multi = Styles.Model:Build()
+	assert(#multi.upcoming==count-1)
+	for i,preview in ipairs(multi.upcoming) do
+		assert(preview.stepNum==12+i and #preview.lines==#GQ.CurrentGuide.steps[12+i].goals)
+	end
+	assert(multi.next.text==Styles.Model.Summary(GQ.CurrentGuide.steps[12+count]))
+	assert(multi.lines[1].goal==m.lines[1].goal and multi.waypoint.x==m.waypoint.x,
+		"previews must not change the active objectives or waypoint")
+end
+local future = GQ.CurrentGuide.steps[13]
+future.AreRequirementsMet = function() return false end
+assert(#Styles.Model:Build().upcoming==3,"ineligible future steps stay hidden")
+GQ.db.profile.showwrongsteps = true
+assert(#Styles.Model:Build().upcoming==4,"debug override still shows ineligible steps")
+GQ.db.profile.showwrongsteps = nil
+future.AreRequirementsMet = nil
+future.PrepareCompletion = function(self) self.previewPrepared = true end
+future.goals[1].GetStatus = function(self)
+	assert(future.previewPrepared,"future goals must be prepared before reading status")
+	return self.status,self.done,self.needed
+end
+Styles.Model:Build()
+future.PrepareCompletion = nil
+local current = GQ.CurrentStep
+GQ.CurrentStepNum,GQ.CurrentStep = 63,GQ.CurrentGuide.steps[63]
+local ending = Styles.Model:Build()
+assert(#ending.upcoming==1 and ending.upcoming[1].stepNum==64 and ending.next==nil)
+GQ.CurrentStepNum,GQ.CurrentStep = 64,GQ.CurrentGuide.steps[64]
+ending = Styles.Model:Build()
+assert(#ending.upcoming==0 and #ending.lines>0 and ending.next==nil)
+GQ.CurrentStepNum,GQ.CurrentStep = 12,current
+GQ.db.profile.showcountsteps = 1
 
 local base,range = Styles.Model.SplitTitle("Leveling Guides\\Darkshore (15-18)")
 assert(base=="Darkshore" and range=="15\226\128\14718")

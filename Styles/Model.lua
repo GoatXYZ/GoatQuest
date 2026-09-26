@@ -12,6 +12,7 @@ local Styles = GQ.Styles
 --   lines       { line, ... }  visible goals of the current step, see MakeLine
 --   primary     index into lines of the first incomplete goal (or 1)
 --   along       { line, ... }  incomplete goals of sticky steps running alongside
+--   upcoming    { {stepNum=..., lines={...}}, ... } additional displayed steps
 --   prev, next  { text=... } or nil   neighbouring step summaries
 --   waypoint    { x, y, zone, title } in percent, or nil
 -- }
@@ -128,7 +129,7 @@ end
 
 function Model:Build()
 	local guide,step = GQ.CurrentGuide,GQ.CurrentStep
-	local snap = {lines={}, along={}, primary=1}
+	local snap = {lines={}, along={}, upcoming={}, primary=1}
 
 	if not guide or not step then
 		snap.state = "none"
@@ -163,8 +164,19 @@ function Model:Build()
 		end
 	end
 
+	-- Respect the same step range as the stock viewer. Check requirements before
+	-- exposing future objectives (class/race and optional steps may be hidden).
+	local count = tonumber(profile.showcountsteps) or 1
+	local last = math.min(#steps,num+math.max(1,count)-1)
+	for i=num+1,last do
+		local upcoming = steps[i]
+		if upcoming and (profile.showwrongsteps or not upcoming.AreRequirementsMet or upcoming:AreRequirementsMet()) then
+			if upcoming.PrepareCompletion then upcoming:PrepareCompletion() end
+			tinsert(snap.upcoming,{stepNum=i,lines=VisibleLines(upcoming,not profile.showinlinetravel)})
+		end
+	end
 	if steps[num-1] then snap.prev = {text=SafeSummary(steps[num-1])} end
-	if steps[num+1] then snap.next = {text=SafeSummary(steps[num+1])} end
+	if steps[last+1] then snap.next = {text=SafeSummary(steps[last+1])} end
 
 	snap.waypoint = Waypoint(step)
 	return snap

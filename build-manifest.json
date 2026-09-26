@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "target_client": "1.60.1.70009",
   "focus": "Leveling, Dungeons, Professions guides and navigation",
   "modified_from_classic": [
@@ -330,6 +330,7 @@
     "tests/test_startup.py",
     "tests/test_tabs.py",
     "tests/test_viewer_cleanup.py",
+    "tests/test_viewer_context_menu.py",
     "tests/test_viewer_core.py",
     "tests/test_viewer_halo.py",
     "tests/test_viewer_movers.py",

@@ -598,6 +598,7 @@ function GQ:Options_DefineOptionTables()
 			set=function(i,v)
 				Setter_Simple(i,v)
 				GQ.Frame:OnSizeChanged()
+				GQ:UpdateFrame()
 			end,
 			_default=1,
 			width="full", pulloutWidth="single", 

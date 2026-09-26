@@ -168,6 +168,34 @@ local function Menu_OnClick(_,button)
 	end
 end
 
+local function GoalMenu_OnClick(frame,button)
+	if button~="RightButton" then return end
+	local goal = frame.goal
+	local step = goal and goal.parentStep
+	if not step or not GQ.CurrentGuide then return end
+	-- Future steps are previews. Their menu's Skip action would skip the
+	-- current step, so keep the stock viewer's restriction on them.
+	local active = step==GQ.CurrentStep
+	if frame.parentStep.is_sticky then
+		for _,sticky in ipairs(GQ.CurrentStickies or EMPTY) do
+			if sticky==step then active = true break end
+		end
+	end
+	if not active then return end
+	frame.menuGoal = goal
+	GQ:OpenQuickStepMenu(frame.parentStep,frame)
+end
+
+function Viewer:CloseStaleGoalMenu(hidden)
+	local menu = GQ.Frame and GQ.Frame.Menu
+	local anchor = menu and menu.goalframe
+	if not anchor or anchor.viewer~=self then return end
+	if hidden or not anchor:IsShown() or anchor.goal~=anchor.menuGoal then
+		if DropDownForkList1 and DropDownForkList1.dropdown==menu then CloseDropDownForks() end
+		menu.goalframe,menu.stepframe = nil,nil
+	end
+end
+
 local function SetHover(b,on)
 	if b.hl then b.hl:SetShown(on) end
 	local c = on and b.hoverColor or b.baseColor
@@ -241,7 +269,10 @@ function Viewer:CreatePanel()
 	panel:SetClampedToScreen(true)
 	panel:SetMovable(true)
 	panel:EnableMouse(true)
-	panel:SetScript("OnHide",function(f) StopMove(f,"viewer_point") end)
+	panel:SetScript("OnHide",function(f)
+		StopMove(f,"viewer_point")
+		self:CloseStaleGoalMenu(true)
+	end)
 	PlaceFrame(panel,"viewer_point",DEFAULT_POINT)
 
 	local bg = Styles:Texture(panel,"BACKGROUND")
@@ -355,6 +386,15 @@ function Viewer:CreatePanel()
 		return fs
 	end)
 	self.texes = Styles:Pool(function() return Styles:Texture(panel,"ARTWORK") end)
+	self.goalButtons = Styles:Pool(function()
+		local b = CreateFrame("Button",nil,panel)
+		b.viewer = self
+		b.parentStep = {}
+		b:EnableMouse(true)
+		b:RegisterForClicks("RightButtonUp")
+		b:SetScript("OnClick",GoalMenu_OnClick)
+		return b
+	end)
 
 	self.accent = {1,1,1}
 	self.groups = {}
@@ -617,8 +657,24 @@ end
 -- Rows
 ---------------------------------------------------------------------------
 
+-- Full-width mouse targets cover counts, bars and wrapped text. The stock
+-- menu anchors to this visible frame, not the parked stock viewer.
+function Viewer:GoalTarget(line,y,height,background)
+	local goal = line and line.goal
+	if not (goal and goal.parentStep) then return end
+	local b = self.goalButtons:Acquire()
+	b.goal = goal
+	b.parentStep.step = goal.parentStep
+	b.parentStep.is_sticky = line.sticky
+	b:SetFrameLevel(self.panel:GetFrameLevel()+(background and 1 or 2))
+	b:SetPoint("TOPLEFT",self.panel,"TOPLEFT",0,-y)
+	b:SetSize(WIDTH,height)
+	return b
+end
+
 -- Counted objective: name left, count right, bar underneath.
 function Viewer:CountedRow(line,y,small,now)
+	local top = y
 	local ar,ag,ab = self.ar,self.ag,self.ab
 	local size = small and 12 or 13
 	local lh = LH(size)
@@ -647,7 +703,7 @@ function Viewer:CountedRow(line,y,small,now)
 	if frac>0 then
 		fill = self:Tex(TEX_WHITE,1,ar,ag,ab,1,PAD,y,max(self.px,INNER*min(1,frac)),bh)
 	end
-	self:AddRow(line,nameFs,count,track,fill)
+	self:AddRow(line,nameFs,count,track,fill).clicker = self:GoalTarget(line,top,y+bh-top)
 
 	-- Count went up since the last render: light it briefly.
 	local goal = line.goal
@@ -675,12 +731,13 @@ function Viewer:PlainRow(line,y,small)
 	else
 		self:Tex(TEX_DOT,1,MUTED[1],MUTED[2],MUTED[3],1,PAD+3,mid-3,6,6)
 	end
-	self:AddRow(line,fs)
+	self:AddRow(line,fs).clicker = self:GoalTarget(line,y,h)
 	return y+h
 end
 
-function Viewer:TipRow(text,y)
+function Viewer:TipRow(text,y,line)
 	local _,h = self:Wrapped("archivo",11.5,MUTED,text,PAD,y,INNER)
+	self:GoalTarget(line,y,h)
 	return y+h
 end
 
@@ -769,23 +826,10 @@ function Viewer:RenderEmpty(model,y)
 	return y+14
 end
 
-function Viewer:RenderGuide(model,y)
-	local ar,ag,ab = self.ar,self.ag,self.ab
+function Viewer:RenderObjectives(model,y)
 	local now = GetTime()
 	local lines = model.lines or EMPTY
-
-	-- Previous step, done.
-	local prev = model.prev and model.prev.text
-	if prev and prev~="" then
-		y = y+9
-		local lh = LH(12)
-		self:Tex(TEX_CHECK,1,ar,ag,ab,1,PAD-1,y+(lh-14)/2,14,14)
-		self:Line("archivo",12,DIM,prev,PAD+19,y,INNER-19)
-		y = y+lh
-	end
-
-	-- Current step, grouped by quest. gap is the space owed before the next item.
-	y = y+10
+	-- Group each step separately so repeated quests retain their step order.
 	local gap = 0
 	local primary = lines[model.primary or 1]
 	local groups,n = self:Group(lines,primary)
@@ -800,7 +844,7 @@ function Viewer:RenderGuide(model,y)
 		for _,line in ipairs(group) do
 			y = y+gap
 			if line.isTip then
-				y = self:TipRow(line.text,y)
+				y = self:TipRow(line.text,y,line)
 				gap = 7
 			elseif line.counted then
 				y = self:CountedRow(line,y,false,now)
@@ -811,10 +855,30 @@ function Viewer:RenderGuide(model,y)
 			end
 		end
 		if group.primary and primary.tip and primary.tip~="" then
-			y = self:TipRow(primary.tip,y+gap-3)
+			y = self:TipRow(primary.tip,y+gap-3,primary)
 			gap = 7
 		end
 	end
+	return y,gap,n
+end
+
+function Viewer:RenderGuide(model,y)
+	local ar,ag,ab = self.ar,self.ag,self.ab
+	local now = GetTime()
+
+	-- Previous step, done.
+	local prev = model.prev and model.prev.text
+	if prev and prev~="" then
+		y = y+9
+		local lh = LH(12)
+		self:Tex(TEX_CHECK,1,ar,ag,ab,1,PAD-1,y+(lh-14)/2,14,14)
+		self:Line("archivo",12,DIM,prev,PAD+19,y,INNER-19)
+		y = y+lh
+	end
+
+	local gap,n
+	local currentTop = y
+	y,gap,n = self:RenderObjectives(model,y+10)
 
 	-- Waypoint.
 	local wp = model.waypoint
@@ -829,6 +893,7 @@ function Viewer:RenderGuide(model,y)
 	end
 
 	-- Along the way: open objectives of sticky steps.
+	self:GoalTarget((model.lines or EMPTY)[model.primary or 1],currentTop,y-currentTop,true)
 	local along = model.along or EMPTY
 	if #along>0 then
 		y = y+max(gap,12)
@@ -842,12 +907,21 @@ function Viewer:RenderGuide(model,y)
 			if line.counted then
 				y = self:CountedRow(line,y,true,now)
 			elseif line.isTip then
-				y = self:TipRow(line.text,y)
+				y = self:TipRow(line.text,y,line)
 			else
 				y = self:PlainRow(line,y,true)
 			end
 			gap = 7
 		end
+	end
+
+	-- Additional steps selected in Step Display, with their full objectives.
+	for _,upcoming in ipairs(model.upcoming or EMPTY) do
+		y = y+12
+		self:Tex(TEX_WHITE,0,1,1,1,0.07,0,y,WIDTH,self.px)
+		y = y+9
+		self:Line("archivo_narrow",12,MUTED,STEP_FMT:format(upcoming.stepNum,model.stepCount),PAD,y,INNER)
+		y = self:RenderObjectives(upcoming,y+LH(12)+7)
 	end
 	y = y+12
 
@@ -873,6 +947,7 @@ function Viewer:Render(model)
 	self.texts:ReleaseAll()
 	self.wraps:ReleaseAll()
 	self.texes:ReleaseAll()
+	self.goalButtons:ReleaseAll()
 	self.chooseBtn:Hide()
 	self.nrows = 0
 	self.nbumps = 0
@@ -884,6 +959,7 @@ function Viewer:Render(model)
 		y = self:RenderEmpty(model,y)
 	end
 	self.panel:SetHeight(ceil(y))
+	self:CloseStaleGoalMenu()
 
 	if self.nbumps>0 then
 		self.panel:SetScript("OnUpdate",Bump_OnUpdate)

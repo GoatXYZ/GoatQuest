@@ -133,6 +133,36 @@ assert(top(nextfs)==top(thenfs))
 assert(panel:GetHeight()>top(nextfs)+16,"panel fits its content")
 local fullHeight = panel:GetHeight()
 
+----------------------------------------------------------------- multiple steps and live count changes
+local future = GQ.CurrentGuide.steps[13]
+local originalGoals = future.goals
+future.goals = {
+	F.Goal({text="First future objective",quest={title="Future quest"}}),
+	F.Goal({text="Second future objective"}),
+	F.Goal({text="Hidden future objective",status="hidden"}),
+}
+for count=2,5 do
+	GQ.db.profile.showcountsteps = count
+	GQ:UpdateFrame()
+	F.Tick(3)
+	assert(#viewer.model.upcoming==count-1)
+	local first = one("^First future objective$")
+	local second = one("^Second future objective$")
+	assert(top(first)>top(row("Red Leather Bandana").name) and top(second)>top(first))
+	none("Hidden future objective")
+	assert(panel:GetHeight()>fullHeight and panel:GetHeight()>top(second)+16)
+	assert(viewer.model.stepNum==12 and GQ.CurrentStepNum==12)
+end
+GQ.db.profile.showcountsteps = 1
+GQ:UpdateFrame()
+F.Tick(3)
+one("^First future objective$") -- retained only as the single-step "then" summary
+none("^Second future objective$")
+assert(near(panel:GetHeight(),fullHeight),"reducing the count releases preview rows and shrinks the panel")
+future.goals = originalGoals
+GQ:UpdateFrame()
+F.Tick(3)
+
 ----------------------------------------------------------------- progress bump
 local w0 = trap.fill:GetWidth()
 GQ.CurrentStep.goals[1].done = 10

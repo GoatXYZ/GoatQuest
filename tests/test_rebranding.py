@@ -41,7 +41,7 @@ for path in ROOT.rglob("*"):
 assert not errors, "Unexpected old branding:\n" + "\n".join(errors)
 
 toc = (ROOT / "GoatQuest.toc").read_text()
-assert "## Version: 1.0.0" in toc
+assert "## Version: 1.1.0" in toc
 assert "## IconTexture: Interface\\AddOns\\GoatQuest\\Skins\\goatquest-icon" in toc
 assert "## SavedVariables: GoatQuestSettings" in toc
 
@@ -62,7 +62,7 @@ for name in re.findall(r'["\']((?:GoatQuest|GQ)\w*(?:Template|ActionButton|Actio
     assert name in templates, f"Missing renamed XML template: {name}"
 
 manifest = json.loads((ROOT / "build-manifest.json").read_text())
-assert manifest["version"] == "1.0.0"
+assert manifest["version"] == "1.1.0"
 for path in manifest["modified_from_classic"] + manifest["added_files"]:
     assert (ROOT / path).is_file(), f"Stale build manifest entry: {path}"
 print(f"PASS rebranding: {checked} source/manifests, filenames, XML template/mixin references; migration contracts retained")
