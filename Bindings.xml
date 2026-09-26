@@ -1,0 +1,24 @@
+<Bindings>
+	<Binding name="GOATQUEST_OPENGUIDE" description="Toggle GoatQuest" header="GOATQUEST" category="GoatQuest">
+		GoatQuest:ToggleFrame()
+	</Binding>
+	<Binding name="GOATQUEST_PREV" description="Previous Step" category="GoatQuest">
+		GoatQuest.Frame:PrevButton_OnClick("LeftButton")
+	</Binding>
+	<Binding name="GOATQUEST_NEXT" description="Next Step" category="GoatQuest">
+		GoatQuest.Frame:NextButton_OnClick("LeftButton")
+	</Binding>
+      <Binding name="GOATQUEST_WAYPOINT_NEXT" description="Next Waypoint" category="GoatQuest">
+          GQ.Pointer:CycleWaypoint(1)
+      </Binding>
+      <Binding name="GOATQUEST_WAYPOINT_PREV" description="Previous Waypoint" category="GoatQuest">
+          GQ.Pointer:CycleWaypoint(-1)
+      </Binding>
+	<Binding name="CLICK GoatQuestAB1:LeftButton" header="GOATQUESTACTIONBAR" category="GoatQuest"/>
+	<Binding name="CLICK GoatQuestAB2:LeftButton" category="GoatQuest"/>
+	<Binding name="CLICK GoatQuestAB3:LeftButton" category="GoatQuest"/>
+	<Binding name="CLICK GoatQuestAB4:LeftButton" category="GoatQuest"/>
+	<Binding name="CLICK GoatQuestAB5:LeftButton" category="GoatQuest"/>
+
+	
+</Bindings>

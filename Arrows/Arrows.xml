@@ -1,0 +1,16 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/FrameXML/UI.xsd">
+
+	<Script file="Arrows.lua"/>
+
+	<Script file="ArrowSkin.lua"/>
+	<Include file="ArrowSkin.xml"/>
+	
+	<!-- the one arrow skin; the stock arrow frame carries the nav pipeline and the secure spell button -->
+	<Script file="GoatQuest\Arrow.lua"/>
+
+	<!--
+	<Script file="SharpFat\Arrow.lua"/>
+	<Script file="RoundFlat\Arrow.lua"/>
+	<Script file="Jigsaw\Arrow.lua"/>
+	-->
+</Ui>
