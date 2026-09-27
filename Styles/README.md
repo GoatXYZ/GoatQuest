@@ -38,7 +38,8 @@ viewer never hides the stock frame:
   `GQ.Frame:GetAlpha()` stays 1, so every engine check still passes.
 - `GQ.Frame` is parked off-screen so its invisible buttons cannot catch clicks.
   Post-hooks on `GQ:ReanchorFrame` and `GQ:SetSkin` keep it parked.
-- A snapped action bar is unsnapped, so it stays where it is.
+- The action bar is pinned to the top edge of the panel and follows it when
+  it moves; it cannot be dragged off while the viewer is active.
 - The viewer mirrors `GQ.Frame`'s shown state and alpha. The viewer keybinding,
   the minimap button, cinematics, dungeon auto-hide and "hide in combat"
   therefore behave exactly as they did with the stock viewer.

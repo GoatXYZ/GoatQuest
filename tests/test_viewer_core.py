@@ -114,7 +114,6 @@ assert(Styles:IsDriving() and Styles.active==probe and probe.creates==1)
 assert(GoatQuestFrameMaster:GetAlpha()==0, "stock viewer faded out")
 assert(GQ.Frame:GetAlpha()==1 and GQ.Frame:IsVisible(), "engine gates still see the viewer")
 assert(Styles:IsStockParked() and not GQ.Frame:IsClampedToScreen())
-assert(GQ.ActionBar.Frame.snapped==false, "snapped action bar is released while parked")
 assert(arrow:GetAlpha()==0 and not arrow:IsMouseEnabled(), "stock arrow hidden and click-through")
 assert(probe.root:IsShown() and probe.settings>=1)
 

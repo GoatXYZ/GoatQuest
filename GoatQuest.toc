@@ -2,7 +2,7 @@
 ## Title: |cfff4bf2aGoatQuest|r |cffaaaaaa(Forever)|r
 ## Notes: Quest guides and navigation for WoW Forever. Based on the supplied guide engine and content.
 ## Author: Goat; based on supplied guide engine and content
-## Version: 1.1.0
+## Version: 1.3.0
 ## DefaultState: enabled
 ## LoadOnDemand: 0
 ## SavedVariables: GoatQuestSettings

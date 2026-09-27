@@ -65,6 +65,17 @@ function ActionBar:IsExpandingRight()	--[2]=("Right") in actionbar_direction = e
 	return GQ.db.profile.actionbar_direction == 2
 end
 
+-- While the GoatQuest viewer (Styles) drives the guide, the stock frame is parked off-screen,
+-- so the bar is pinned to the top of the viewer's panel instead and cannot be dragged away.
+function ActionBar:GetViewerPanel()
+	local style = GQ.Styles and GQ.Styles.active
+	return style and style.panel
+end
+
+function ActionBar:GetSnapTarget()
+	return ActionBar:GetViewerPanel() or GQ.Frame
+end
+
 function ActionBar:Initialise()
 	ActionBar:CreateFrame()
 
@@ -315,7 +326,7 @@ function ActionBar:CreateFrame()
 				end
 			)
 			:SetScript("OnDragStart", function(self)
-				if InCombatLockdown() or self.Lockdown then return end
+				if InCombatLockdown() or self.Lockdown or ActionBar:GetViewerPanel() then return end
 				self:StartMoving()
 			end)
 			:SetScript("OnDragStop", function(self)
@@ -375,6 +386,23 @@ function ActionBar:ShowDisabledOverlay()
 end
 
 local SNAP_Y=5
+
+local function StorePin(pin,...)
+	local moved = false
+	for i=1,select("#",...) do
+		local v = select(i,...)
+		if pin[i]~=v then pin[i]=v moved=true end
+	end
+	return moved
+end
+
+-- records where the viewer's panel and the pinned bar are; true if either moved since the last call
+local function PinMoved(bar,panel)
+	bar.pin = bar.pin or {}
+	return StorePin(bar.pin, panel:GetLeft(),panel:GetRight(),panel:GetTop(),panel:GetEffectiveScale(),
+		bar:GetLeft(),bar:GetRight(),bar:GetBottom(),bar:GetEffectiveScale(),ActionBar:IsExpandingRight())
+end
+
 function ActionBar.Frame_OnUpdate(self)
 	if InCombatLockdown() or self.Lockdown then return end
 
@@ -401,6 +429,15 @@ function ActionBar.Frame_OnUpdate(self)
 		else
 			self.snapped=false
 		end
+	elseif ActionBar:GetViewerPanel() then
+		-- pinned to the viewer: follow its panel when it is dragged, moved, rescaled or reset,
+		-- and take the bar back if anything else re-anchors it
+		local panel = ActionBar:GetViewerPanel()
+		if not (panel:GetLeft() and self:GetLeft()) then return end
+		if PinMoved(self,panel) then
+			ActionBar:SavePosition()
+			PinMoved(self,panel)
+		end
 	elseif GQ.framemoving and ActionBar.Frame.snapped then
 		-- if we are snapped, and main frame is dragged, update our position
 		ActionBar:SavePosition()
@@ -416,11 +453,14 @@ function ActionBar:SavePosition(options)
 		return
 	end
 
+	local target = ActionBar:GetSnapTarget()
+	if ActionBar:GetViewerPanel() then self.Frame.snapped = true end
+
 	local ssc = self.Frame:GetEffectiveScale()
-	local zsc = GQ.Frame:GetEffectiveScale()
-	local zt=GQ.Frame:GetTop()*zsc
+	local zsc = target:GetEffectiveScale()
+	local zt=target:GetTop()*zsc
 	local anchorLeft = ActionBar:IsExpandingRight()
-	local zs  = ((anchorLeft and GQ.Frame:GetLeft()) or GQ.Frame:GetRight()) * zsc
+	local zs  = ((anchorLeft and target:GetLeft()) or target:GetRight()) * zsc
 	local anchor = anchorLeft and "BOTTOMLEFT" or "BOTTOMRIGHT"
 	local xOffset = anchorLeft and zs or (zs - GetScreenWidth() * UIParent:GetEffectiveScale())
 

@@ -343,10 +343,8 @@ function Styles:SuppressStockViewer()
 	master():SetAlpha(0)
 	GQ.Frame:SetClampedToScreen(false)
 	self:ParkStockFrame()
-	-- A snapped action bar re-anchors itself to GQ.Frame on every step change;
-	-- unsnap it so the bar stays where it is.
-	local bar = GQ.ActionBar and GQ.ActionBar.Frame
-	if bar then bar.snapped = false end
+	-- The action bar pins itself to the top of the panel while the viewer is
+	-- active (ActionBar.lua), so it never follows the parked frame.
 	self.viewerSuppressed = true
 end
 
