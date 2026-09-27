@@ -13,6 +13,7 @@ local SkinData = ui.SkinData
 
 local tinsert,tremove,print,ipairs,pairs,wipe,debugprofilestop=tinsert,tremove,print,ipairs,pairs,wipe,debugprofilestop
 local IsQuestFlaggedCompleted = C_QuestLog.IsQuestFlaggedCompleted
+local GetItemInfoInstant = C_Item and C_Item.GetItemInfoInstant or GetItemInfoInstant
 
 local ItemScore = GQ.ItemScore
 local GearFinder = {}

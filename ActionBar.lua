@@ -21,6 +21,7 @@ local BUTTON_SIZE = 30
 local BAR_HEIGHT = BUTTON_SIZE+10
 
 local GetSpellCooldown = C_Spell.GetSpellCooldown or GetSpellCooldown
+local GetItemInfoInstant = C_Item and C_Item.GetItemInfoInstant or GetItemInfoInstant -- the global is gone on newer clients (Forever)
 
 local function OnEvent(self, event)
 	if not GQ.db.profile.enable_actionbar then return end -- disabled

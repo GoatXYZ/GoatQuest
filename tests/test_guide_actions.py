@@ -16,7 +16,10 @@ NUM_BAG_SLOTS = 4
 function UnitName() return "Goat" end
 function InCombatLockdown() return false end
 C_Spell = {GetSpellCooldown=function() return {} end, GetSpellInfo=function() end}
-C_Item = {GetItemCount=function() return 1 end}
+-- Forever has only C_Item.GetItemInfoInstant; the global must not be needed.
+C_Item = {GetItemCount=function() return 1 end, IsEquippedItem=function() return false end,
+    GetItemInfoInstant=function(id) return id, "Quest", "Quest", "INVTYPE_NON_EQUIP_IGNORE", 133721, 12, 0 end}
+GetItemInfoInstant = nil
 
 GQ = {
     Retrofit={C_Spell=C_Spell}, UI={}, startups={},
@@ -70,6 +73,11 @@ actionbar:SetActionButtonsQueued()
 assert(#actionbar.Buttons==1 and actionbar.TrashButton==nil)
 assert(button.attributes.itemid==771 and button.attributes.type=="macro")
 assert(button.attributes.macrotext1:find("/use item:771",1,true))
+-- Without forceuse the item's equip slot is checked first (this crashed on Forever).
+goal.forceuse=nil
+button.attributes={}
+actionbar:SetActionButtonsQueued()
+assert(#actionbar.Buttons==1 and button.attributes.itemid==771)
 GQ.CurrentStep.goals={}
 actionbar:SetActionButtonsQueued()
 assert(#actionbar.Buttons==0 and actionbar.TrashButton==nil)

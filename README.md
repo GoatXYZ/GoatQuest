@@ -1,4 +1,4 @@
-# GoatQuest 1.3.0
+# GoatQuest 1.3.1
 
 Quest guides and navigation for WoW Forever beta **1.60.1.70009 / Interface 16001**.
 Visible guide categories: **Leveling, Dungeons, Professions**.
@@ -11,7 +11,7 @@ Visible guide categories: **Leveling, Dungeons, Professions**.
 4. Use `/goatquestguides` to browse guides. `/goatquest` opens the command/options interface;
    `/goatquest options` opens settings, and `/goatquest way 33,44` sets a waypoint.
    On the minimap button, left-click shows or hides the viewer and right-click opens settings.
-5. `/goatquestdebug` should report **1.3.0**. It also reports the indexed/fully parsed guide
+5. `/goatquestdebug` should report **1.3.1**. It also reports the indexed/fully parsed guide
    counts and whether old settings were imported.
 
 GoatQuest uses **GoatQuestSettings**. On first launch it copies your old **GoatZygSettings**,
@@ -27,6 +27,7 @@ The original Retail and Classic source addons have not been changed.
 
 ## What changed
 
+- Version 1.3.1 fixes an action bar error on steps that use an item (WoW Forever).
 - Version 1.3.0 pins the action bar to the top of the guide viewer; it follows the
   viewer when it moves and can no longer be dragged away.
 - Version 1.1.0 restores the selected 1–5 steps in the viewer and right-click
