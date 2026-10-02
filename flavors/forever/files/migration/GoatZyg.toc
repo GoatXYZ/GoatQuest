@@ -1,0 +1,9 @@
+## Interface: 16001
+## Title: GoatQuest - Settings Import
+## Notes: Imports your existing GoatZyg settings into GoatQuest. Contains no viewer or gameplay code. Keep enabled for the first GoatQuest login.
+## Author: Goat
+## Version: 0.2.0
+## DefaultState: enabled
+## LoadOnDemand: 1
+## SavedVariables: GoatZygSettings
+## X-GoatQuest-Migration: 1

@@ -1,0 +1,8 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/FrameXML/UI.xsd">
+	<!-- The GoatQuest viewer: guide panel plus arrow or halo navigation. See Styles/README.md. -->
+	<Script file="Core.lua"/>
+	<Script file="Model.lua"/>
+	<Script file="Movers.lua"/>
+	<Script file="Halo.lua"/>
+	<Script file="Viewer.lua"/>
+</Ui>

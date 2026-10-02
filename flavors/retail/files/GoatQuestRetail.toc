@@ -1,0 +1,46 @@
+## Interface: 120100
+## Title: |cfff4bf2aGoatQuest|r |cffaaaaaa(Retail)|r
+## Notes: Quest guides and navigation for World of Warcraft Retail. Based on the supplied guide engine and content.
+## Author: Goat; based on supplied guide engine and content
+## Version: 1.0.0
+## DefaultState: enabled
+## LoadOnDemand: 0
+## SavedVariables: GoatQuestSettings
+## OptionalDeps: TomTom
+## IconTexture: Interface\AddOns\GoatQuestRetail\Skins\goatquest-icon
+## AddonCompartmentFunc: GoatQuest_OnAddonCompartmentClick
+## AddonCompartmentFuncOnEnter: GoatQuest_OnAddonCompartmentEnter
+## AddonCompartmentFuncOnLeave: GoatQuest_OnAddonCompartmentLeave
+
+Compat\Bootstrap.lua
+Compat\MigrateSettings.lua
+Libs\Libs.xml
+Libs-Retail\Libs.xml
+Retrofit.lua
+Localization\Localization.xml
+# Only the client's text locale is compiled (AllowLoadTextLocale, patch 11.2.0+).
+Localization-Retail\NPCs_deDE.lua [AllowLoadTextLocale deDE]
+Localization-Retail\NPCs_enUS.lua
+Localization-Retail\NPCs_esES.lua [AllowLoadTextLocale esES]
+Localization-Retail\NPCs_frFR.lua [AllowLoadTextLocale frFR]
+Localization-Retail\NPCs_itIT.lua [AllowLoadTextLocale itIT]
+Localization-Retail\NPCs_koKR.lua [AllowLoadTextLocale koKR]
+Localization-Retail\NPCs_ptbr.lua [AllowLoadTextLocale ptBR]
+Localization-Retail\NPCs_ruRU.lua [AllowLoadTextLocale ruRU]
+Localization-Retail\NPCs_zhCN.lua [AllowLoadTextLocale zhCN]
+Localization-Retail\NPCs_zhTW.lua [AllowLoadTextLocale zhTW]
+Localization-Retail\Quests_deDE.lua [AllowLoadTextLocale deDE]
+Localization-Retail\Quests_enUS.lua [AllowLoadTextLocale enUS]
+Localization-Retail\Quests_esES.lua [AllowLoadTextLocale esES]
+Localization-Retail\Quests_esMX.lua [AllowLoadTextLocale esMX]
+Localization-Retail\Quests_frFR.lua [AllowLoadTextLocale frFR]
+Localization-Retail\Quests_itIT.lua [AllowLoadTextLocale itIT]
+Localization-Retail\Quests_koKR.lua [AllowLoadTextLocale koKR]
+Localization-Retail\Quests_ptBR.lua [AllowLoadTextLocale ptBR]
+Localization-Retail\Quests_ruRU.lua [AllowLoadTextLocale ruRU]
+Localization-Retail\Quests_zhCN.lua [AllowLoadTextLocale zhCN]
+Localization-Retail\Quests_zhTW.lua [AllowLoadTextLocale zhTW]
+Compat\Identity.lua
+files-GoatQuest.xml
+Compat\GuideOnly.lua
+Compat\Diagnostics.lua

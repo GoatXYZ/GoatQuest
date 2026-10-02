@@ -1,0 +1,28 @@
+local GoatQuest=GoatQuest
+if not GoatQuest then return end
+if GQ:DoMutex("DungeonsCTWW") then return end
+GoatQuest.GuideMenuTier = "TRI"
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Dungeons\\Ara-kara, City of Echoes")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Dungeons\\City of Threads")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Dungeons\\The Dawnbreaker")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Dungeons\\Cinderbrew Meadery")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Dungeons\\Darkflame Cleft")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Dungeons\\Priory of the Sacred Flame")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Dungeons\\The Rookery")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Dungeons\\The Stonevault")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Raids\\Nerub-Ar Palace")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Raids\\Liberation of Undermine")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Dungeons\\Operation: Floodgate")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Delves\\Fungal Folly Treasures")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Delves\\Kriegval's Rest Treasures")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Delves\\The Dread Pit Treasures")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Delves\\The Waterworks Treasures")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Delves\\The Sinkhole Treasures")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Delves\\Mycomancer Cavern Treasures")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Delves\\Nightfall Sanctum Treasures")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Delves\\Skittering Breach Treasures")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Delves\\The Spiral Weave Treasures")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Delves\\Overcharged Delves")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Dungeons\\Eco-Dome Al'dani")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Dungeons\\Tazavesh, the Veiled Market")
+GoatQuest:RegisterGuidePlaceholder("Dungeon Guides\\The War Within Raids\\Manaforge Omega")

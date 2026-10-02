@@ -1,0 +1,22 @@
+## Interface: 16001
+## Title: |cfff4bf2aGoatQuest|r |cffaaaaaa(Forever)|r
+## Notes: Quest guides and navigation for WoW Forever. Based on the supplied guide engine and content.
+## Author: Goat; based on supplied guide engine and content
+## Version: 1.4.0
+## DefaultState: enabled
+## LoadOnDemand: 0
+## SavedVariables: GoatQuestSettings
+## OptionalDeps: TomTom, GoatZyg
+## IconTexture: Interface\AddOns\GoatQuest\Skins\goatquest-icon
+
+Compat\Bootstrap.lua
+Compat\MigrateSettings.lua
+Libs\Libs.xml
+Libs-Classic\Libs.xml
+Retrofit.lua
+Localization\Localization.xml
+Localization-Classic\Localization.xml
+Compat\Identity.lua
+files-GoatQuest.xml
+Compat\GuideOnly.lua
+Compat\Diagnostics.lua

@@ -1,0 +1,58 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<!-- GoatQuest loads Leveling, Dungeons and Professions. Other catalogue files
+	     remain on disk, but are not read at login. Shared includes stay available. -->
+	<Script>___TG = debugprofilestop()</Script>
+
+	<!-- IMAGES -->
+	<Script file="Images\Images.lua"/>
+
+	<!-- INCLUDES -->
+	<Script file="Includes\General\N_General_Includes.lua"/>
+	<Script file="Includes\General\N_Quest_Includes.lua"/>
+	<Script file="Includes\PetsMounts\N_Mounts_Includes.lua"/>
+	<Script file="Includes\PetsMounts\N_Pets_Includes.lua"/>
+	<Script file="Includes\Professions\N_Professions_Includes.lua"/>
+	<Script file="Includes\Reputations\N_Reputation_Includes.lua"/>
+	<Script file="Includes\Titles\N_Titles_Includes.lua"/>
+	<Script file="Includes\General\A_General_Includes.lua"/>
+	<Script file="Includes\General\A_Quest_Includes.lua"/>
+	<Script file="Includes\PetsMounts\A_Mounts_Includes.lua"/>
+	<Script file="Includes\PetsMounts\A_Pets_Includes.lua"/>
+	<Script file="Includes\Professions\A_Professions_Includes.lua"/>
+	<Script file="Includes\Reputations\A_Reputation_Includes.lua"/>
+	<Script file="Includes\Titles\A_Titles_Includes.lua"/>
+	<Script file="Includes\General\H_General_Includes.lua"/>
+	<Script file="Includes\General\H_Quest_Includes.lua"/>
+	<Script file="Includes\PetsMounts\H_Mounts_Includes.lua"/>
+	<Script file="Includes\PetsMounts\H_Pets_Includes.lua"/>
+	<Script file="Includes\Professions\H_Professions_Includes.lua"/>
+	<Script file="Includes\Reputations\H_Reputation_Includes.lua"/>
+	<Script file="Includes\Titles\H_Titles_Includes.lua"/>
+
+	<!-- LEVELING -->
+	<Script file="Leveling\GoatQuestLevelingAllianceCLASSIC.lua"/>
+	<Script file="Leveling\GoatQuestLevelingAllianceCLASSICTrial.lua"/>
+	<Script file="Leveling\GoatQuestLevelingHordeCLASSIC.lua"/>
+	<Script file="Leveling\GoatQuestLevelingHordeCLASSICTrial.lua"/>
+
+	<!-- DUNGEONS -->
+	<Script file="Dungeons\GoatQuestDungeonAllianceCLASSIC.lua"/>
+	<Script file="Dungeons\GoatQuestDungeonAllianceCLASSICTrial.lua"/>
+	<Script file="Dungeons\GoatQuestDungeonHordeCLASSIC.lua"/>
+	<Script file="Dungeons\GoatQuestDungeonHordeCLASSICTrial.lua"/>
+	<Script file="Dungeons\GoatQuestDungeonScenariosAlliance_CLASSICTrial.lua"/>
+	<Script file="Dungeons\GoatQuestDungeonScenariosHordeCLASSICTrial.lua"/>
+
+	<!-- PROFESSIONS -->
+	<Script file="Professions\GoatQuestProfessionsAllianceCLASSIC.lua"/>
+	<Script file="Professions\GoatQuestProfessionsAllianceCLASSICTrial.lua"/>
+	<Script file="Professions\GoatQuestProfessionsCommonCLASSIC.lua"/>
+	<Script file="Professions\GoatQuestProfessionsHordeCLASSIC.lua"/>
+	<Script file="Professions\GoatQuestProfessionsHordeCLASSICTrial.lua"/>
+
+	<Script>
+		GQ.loading_time_guides = debugprofilestop()-___TG
+		___TG=nil
+	</Script>
+</Ui>

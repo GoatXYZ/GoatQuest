@@ -1,0 +1,1550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GoatQuest: ten looks for the guide viewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Archivo:wdth,wght@62..125,400..700&family=Atkinson+Hyperlegible:wght@400;700&family=Grenze+Gotisch:wght@500;700&family=Grenze:wght@400;500;600&family=Hanken+Grotesk:wght@400;500;600;700&family=IM+Fell+English+SC&family=Josefin+Sans:wght@300;400;600&family=Marcellus&family=Saira+Stencil+One&family=Schibsted+Grotesk:wght@400;600;800&family=Signika:wght@400;600;700&family=Spectral:ital,wght@0,400;0,500;1,400;1,500&family=VT323&family=Vollkorn:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+/* ------------------------------------------------------------------
+   Review shell
+   ------------------------------------------------------------------ */
+:root{
+  --paper:#E3E5E2; --ink:#1B1F23; --ink-2:#51585F; --rule:#C2C7C5; --line:#A9AFAD; --gold:#E0A912;
+  --trap:.6;
+}
+body{
+  /* backdrop: bright day (default) */
+  --sky-a:#86AEC8; --sky-b:#E8D6A8; --sky-c:#F2DCA2; --glow:#FFF0C8; --sun:#FFF6DE; --cloud:#FFF7E6;
+  --far:#B9A983; --mid:#8C8A4B; --sil:#4E3F2B; --tree:#5F6B2F; --field-a:#CFAB4E; --field-b:#9A7728;
+  --rows:#6B5118; --road:#DCC28C; --char:#1F170F; --rim:#FFE6A8; --vig:.38; --mm-a:#A39655; --mm-b:#5F5B2C;
+}
+body[data-scene="night"]{
+  --sky-a:#0A1122; --sky-b:#1C2640; --sky-c:#2E3A58; --glow:#AFC3FF; --sun:#DDE5F5; --cloud:#3A4668;
+  --far:#1C2438; --mid:#141C2B; --sil:#080B12; --tree:#0F1621; --field-a:#1A2232; --field-b:#0A0E16;
+  --rows:#34405A; --road:#262F42; --char:#040508; --rim:#8FA6D8; --vig:.55; --mm-a:#2B3450; --mm-b:#141A28;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.55 "Hanken Grotesk",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+button{font:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+.intro{padding:52px 0 44px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px}
+.brand-mark{width:34px;height:34px;border-radius:8px;background:#17181A;display:grid;place-items:center}
+.brand-mark svg{width:26px;height:26px;fill:#F2C230}
+.intro h1{margin:22px 0 14px;font-size:clamp(34px,5.4vw,58px);line-height:1.02;font-weight:600;letter-spacing:-.028em;max-width:15ch}
+.lede{margin:0;font-size:18px;color:var(--ink-2);max-width:64ch}
+.lede + .lede{margin-top:10px}
+
+.lineup{display:grid;grid-template-columns:repeat(5,1fr);gap:18px 14px;margin-top:38px}
+.tile{display:block;color:var(--ink);text-decoration:none}
+.tile-art{position:relative;display:grid;place-items:center;aspect-ratio:960/520;border-radius:6px;overflow:hidden;background:#000;box-shadow:0 1px 0 rgba(255,255,255,.7),0 12px 22px -14px rgba(20,24,28,.55)}
+.tile-scene{position:absolute;inset:0;width:100%;height:100%}
+.tile-emb{position:relative;display:grid;place-items:center}
+.tile-cap{display:flex;align-items:baseline;gap:8px;margin-top:8px;font-weight:600;font-size:15px}
+.tile-num{color:var(--ink-2);font-weight:500;font-variant-numeric:tabular-nums}
+.tile.picked .tile-cap::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--gold);margin-left:auto;align-self:center}
+.tile:hover .tile-art{outline:2px solid var(--ink);outline-offset:2px}
+.tile:focus-visible{outline:none}
+.tile:focus-visible .tile-art{outline:2px solid var(--ink);outline-offset:3px}
+
+.toolbar{position:sticky;top:0;z-index:50;background:rgba(227,229,226,.97);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.tb{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;padding-top:10px;padding-bottom:10px}
+.tb-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tb-label{font-size:14px;color:var(--ink-2)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:6px 14px;font-size:14px;color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.btn{border-radius:999px;padding:7px 16px;font-size:14px;font-weight:600;cursor:pointer;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.quiet{background:transparent;color:var(--ink);border-color:var(--line);font-weight:500}
+.kill-count{font-size:14px;color:var(--ink-2);font-variant-numeric:tabular-nums;min-width:48px}
+.kill-count b{color:var(--ink)}
+#sl-summary{font-size:14px;color:var(--ink-2);max-width:46ch}
+
+.concept{padding:76px 0 88px;border-top:1px solid var(--rule)}
+.concept:first-of-type{border-top:0}
+.c-head{display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:start;margin-bottom:26px}
+.c-num{font-size:60px;line-height:.9;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.03em;min-width:1.2ch}
+.c-head h2{margin:0 0 6px;font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-.015em}
+.c-pitch{margin:0;font-size:17px;color:var(--ink-2);max-width:62ch}
+.shortlist{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:transparent;border-radius:999px;padding:8px 15px;font-size:14px;font-weight:500;color:var(--ink);cursor:pointer;white-space:nowrap}
+.shortlist svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round}
+.shortlist[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.shortlist[aria-pressed="true"] svg{fill:var(--gold);stroke:var(--gold)}
+
+.stage{position:relative;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.7),0 22px 44px -22px rgba(20,24,28,.55)}
+.stage:fullscreen{border-radius:0;aspect-ratio:auto;width:100vw;height:100vh}
+.screen{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;overflow:hidden;font-size:13px;line-height:1.35;color:#fff}
+.screen :where(p,h4,ul,ol){margin:0;padding:0}
+.screen :where(ul,ol){list-style:none}
+.scene{position:absolute;inset:0;width:100%;height:100%}
+.fs-btn{position:absolute;right:12px;bottom:12px;z-index:20;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.55);color:#fff;border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer}
+.fs-btn:focus-visible{outline:2px solid #fff}
+
+.try{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:16px}
+.try-label{font-size:14px;color:var(--ink-2);margin-right:4px}
+.try-status{font-size:14px;color:var(--ink-2);margin-left:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;font-size:14px;font-weight:500;line-height:1.2;color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip i{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px rgba(0,0,0,.2)}
+
+.notes{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.25fr;gap:32px;margin-top:30px}
+.note h3{margin:0 0 8px;font-size:14px;font-weight:700}
+.note p{margin:0 0 10px;font-size:15px;color:var(--ink-2);max-width:60ch}
+.note strong{color:var(--ink);font-weight:600}
+.sw{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.sw li{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;font-size:14px}
+.sw i{width:22px;height:22px;border-radius:4px;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
+.sw .hex{color:var(--ink-2);font-variant-numeric:tabular-nums;font-size:13px}
+.spec{font-size:25px!important;line-height:1.2;color:var(--ink)!important;margin-bottom:8px!important}
+.spec small{display:block;font-size:17px;margin-top:2px}
+
+.foot{border-top:1px solid var(--rule);padding:36px 0 60px;font-size:14px;color:var(--ink-2)}
+.foot p{margin:0 0 6px;max-width:80ch}
+
+@media (max-width:1060px){
+  .notes{grid-template-columns:1fr 1fr}
+  .lineup{grid-template-columns:repeat(4,1fr)}
+}
+@media (max-width:760px){
+  .wrap{padding:0 18px}
+  .lineup{grid-template-columns:repeat(2,1fr)}
+  .tile-emb{zoom:.72}
+  .c-head{grid-template-columns:auto 1fr;gap:14px}
+  .c-num{font-size:44px}
+  .shortlist{grid-column:1/-1;justify-self:start}
+  .stage-scroll{overflow-x:auto;margin:0 -18px;padding:0 18px 6px}
+  .stage{width:720px}
+  .notes{grid-template-columns:1fr;gap:22px}
+}
+
+/* ------------------------------------------------------------------
+   Stand-in game HUD
+   ------------------------------------------------------------------ */
+.chrome{position:absolute;inset:0;pointer-events:none;font-family:"Hanken Grotesk",sans-serif}
+.uf{position:absolute;left:18px;top:16px;display:flex;align-items:center;gap:8px}
+.uf-port{width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#8A7456,#3B2E20);border:2px solid rgba(20,16,10,.9);box-shadow:0 0 0 1px rgba(255,255,255,.18)}
+.uf-info{width:150px;background:rgba(8,8,8,.55);padding:5px 6px 6px;border-radius:3px}
+.uf-name{display:flex;justify-content:space-between;color:#FFD100;font-size:12px;font-weight:600;margin-bottom:2px}
+.uf-name span:last-child{color:#fff}
+.uf-bar{height:9px;background:rgba(0,0,0,.6);margin-top:3px}
+.uf-bar i{display:block;height:100%}
+.uf-bar.hp i{background:#2BA84A;width:100%}
+.uf-bar.mp i{background:#1F5FD6;width:82%}
+.mm{position:absolute;right:20px;top:12px;width:128px;text-align:center}
+.mm-zone{font-size:12px;font-weight:600;color:#FFD100;text-shadow:0 1px 2px #000;margin-bottom:4px}
+.mm-disc{position:relative;width:128px;height:128px;border-radius:50%;background:radial-gradient(circle,var(--mm-a),var(--mm-b));border:4px solid rgba(24,20,14,.92);box-shadow:0 0 0 1px rgba(255,255,255,.2),0 4px 10px rgba(0,0,0,.4)}
+.mm-disc i{position:absolute;left:50%;top:50%;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:12px solid #fff;transform:translate(-50%,-60%) rotate(-90deg)}
+.bars{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:446px}
+.bar-row{display:grid;grid-template-columns:repeat(12,1fr);gap:2px}
+.bar-row i{aspect-ratio:1;background:linear-gradient(135deg,hsl(var(--h) 26% 36%),hsl(var(--h) 30% 17%));border:1px solid rgba(0,0,0,.8);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.bar-row i:nth-child(1){--h:20}.bar-row i:nth-child(2){--h:200}.bar-row i:nth-child(3){--h:35}.bar-row i:nth-child(4){--h:0}
+.bar-row i:nth-child(5){--h:280}.bar-row i:nth-child(6){--h:120}.bar-row i:nth-child(7){--h:45}.bar-row i:nth-child(8){--h:210}
+.bar-row i:nth-child(9){--h:15}.bar-row i:nth-child(10){--h:90}.bar-row i:nth-child(11){--h:260}.bar-row i:nth-child(12){--h:170}
+.xp{height:6px;margin-top:4px;background:rgba(0,0,0,.6);border:1px solid rgba(0,0,0,.8)}
+.xp i{display:block;height:100%;width:62%;background:#8A3FC8}
+
+.arrow-slot{position:absolute;left:50%;top:86px;transform:translateX(-50%);display:flex;justify-content:center}
+.p-trap{width:calc(var(--trap) * 100%)}
+
+/* ------------------------------------------------------------------
+   1  Classbound
+   ------------------------------------------------------------------ */
+.c1{--cls:#F48CBA;font-family:"Archivo",sans-serif}
+.c1 .cb{position:absolute;right:24px;top:180px;width:300px;background:rgba(15,17,21,.9);border:1px solid rgba(255,255,255,.07);border-top:2px solid var(--cls);color:#ECEAE6;font-size:13px;line-height:1.35;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.c1 .cb-head{display:flex;align-items:center;justify-content:space-between;padding:8px 8px 8px 12px}
+.c1 .cb-title{display:flex;align-items:baseline;gap:8px}
+.c1 .cb-guide{font-weight:650;font-size:14.5px}
+.c1 .cb-range{color:#8D939C;font-stretch:85%;font-variant-numeric:tabular-nums}
+.c1 .cb-nav{display:flex;align-items:center}
+.c1 .cb-nav button{all:unset;cursor:pointer;width:22px;height:22px;display:grid;place-items:center;color:#8D939C;border-radius:2px}
+.c1 .cb-nav button:hover{color:#fff;background:rgba(255,255,255,.07)}
+.c1 .cb-nav button:focus-visible{outline:1px solid var(--cls)}
+.c1 .cb-nav svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2}
+.c1 .cb-step{font-stretch:80%;font-weight:600;font-variant-numeric:tabular-nums;padding:0 4px}
+.c1 .cb-step span{color:#8D939C;font-weight:400}
+.c1 .cb-progress{height:2px;background:rgba(255,255,255,.07)}
+.c1 .cb-progress i{display:block;height:100%;width:18.75%;background:var(--cls)}
+.c1 .cb-done{display:flex;align-items:center;gap:7px;padding:9px 12px 0;color:#6F757E;font-size:12px}
+.c1 .cb-done svg,.c1 .cb-loc svg{width:12px;height:12px;flex:none}
+.c1 .cb-done svg{color:var(--cls)}
+.c1 .cb-sec{padding:10px 12px 12px}
+.c1 .cb-quest{color:var(--cls);font-weight:600;font-size:12px;margin-bottom:6px}
+.c1 .cb-obj{display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:4px;margin-bottom:9px}
+.c1 .cb-obj .v{font-variant-numeric:tabular-nums;font-stretch:80%;font-weight:600;font-size:13.5px}
+.c1 .cb-obj .bar{grid-column:1/-1;height:3px;background:rgba(255,255,255,.08)}
+.c1 .cb-obj .bar i{display:block;height:100%;background:var(--cls);transition:width .3s}
+.c1 .cb-obj.sm{font-size:12px;margin-bottom:7px;color:#C5C8CD}
+.c1 .cb-obj.sm .v{font-size:12px}
+.c1 .cb-obj.sm .bar{height:1px}
+.c1 .cb-obj.is-complete .n{color:#6F757E;text-decoration:line-through;text-decoration-color:rgba(255,255,255,.3)}
+.c1 .cb-obj.is-complete .v{color:var(--cls)}
+.c1 .cb-obj.bump .v{animation:cb-bump .5s ease-out}
+.c1 .cb-obj.bump .bar i{animation:cb-flash .6s ease-out}
+@keyframes cb-bump{0%{color:var(--cls);transform:translateY(-3px)}100%{transform:none}}
+@keyframes cb-flash{0%{filter:brightness(1.8)}100%{filter:none}}
+.c1 .cb-loc{display:flex;align-items:center;gap:6px;color:#8D939C;font-size:11.5px;margin:-2px 0 2px}
+.c1 .cb-sub{font-size:11.5px;color:#8D939C;margin:12px 0 7px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06)}
+.c1 .cb-next{display:flex;gap:10px;border-top:1px solid rgba(255,255,255,.07);padding:9px 12px;font-size:12px;color:#C5C8CD}
+.c1 .cb-next span{color:#8D939C}
+.c1 .cb-arrow{display:flex;flex-direction:column;align-items:center;gap:1px;text-shadow:0 0 2px rgba(0,0,0,.95),0 1px 4px rgba(0,0,0,.8)}
+.c1 .cb-chev{width:46px;height:46px;transform:rotate(-40deg);fill:var(--cls);stroke:rgba(0,0,0,.55);stroke-width:1.5;stroke-linejoin:round;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));margin-bottom:5px}
+.c1 .cb-dist{font-weight:700;font-size:17px;font-variant-numeric:tabular-nums;color:#fff}
+.c1 .cb-target{font-size:12px;color:#E8E8E8;font-stretch:90%}
+
+/* ------------------------------------------------------------------
+   2  Wanderweg
+   ------------------------------------------------------------------ */
+.c2{font-family:"Signika",sans-serif}
+.c2 .ww{position:absolute;right:22px;top:178px;width:330px;height:480px}
+.c2 .ww-pole{position:absolute;right:14px;top:-10px;bottom:0;width:10px;border-radius:2px;background:linear-gradient(90deg,#6A7073,#C3C8CA 45%,#7A8083);box-shadow:3px 0 6px rgba(0,0,0,.3)}
+.c2 .ww-plate-wrap{position:relative;margin-right:4px;filter:drop-shadow(0 3px 5px rgba(0,0,0,.4))}
+.c2 .ww-plate{background:#F5C400;color:#1F1E1B;clip-path:polygon(28px 0,100% 0,100% 100%,28px 100%,0 50%);padding:9px 16px 8px 36px}
+.c2 .ww-dest{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14px;font-weight:600;line-height:1.35}
+.c2 .ww-dest .t{font-variant-numeric:tabular-nums;white-space:nowrap}
+.c2 .ww-dest.main{font-size:20px;font-weight:700;padding-bottom:5px;margin-bottom:5px;border-bottom:2px solid #1F1E1B}
+.c2 .ww-plate-foot{font-size:11px;margin-top:4px;opacity:.72}
+.c2 .ww-board{position:relative;margin:12px 6px 0 26px;background:#FAFAF6;color:#1F1E1B;border-radius:3px;box-shadow:0 3px 8px rgba(0,0,0,.35);overflow:hidden}
+.c2 .ww-grade{display:flex;align-items:center;gap:8px;padding:7px 12px;font-size:11.5px;font-weight:600;background:#EFEEE8;color:#44433E}
+.c2 .ww-grade i{width:36px;height:10px;flex:none;background:linear-gradient(90deg,#fff 0 33%,#D52B1E 33% 67%,#fff 67%);outline:1px solid #C9C7BF}
+.c2 .ww-quest{font-size:16px;font-weight:700;padding:9px 12px 5px}
+.c2 .ww-objs{padding:0 12px}
+.c2 .ww-objs li{display:grid;grid-template-columns:14px 1fr auto;align-items:center;gap:8px;font-size:14px;padding:3px 0}
+.c2 .ww-objs .mk{width:9px;height:9px;transform:rotate(45deg);border:2px solid #1F1E1B;margin-left:2px}
+.c2 .ww-objs .v{font-weight:600;font-variant-numeric:tabular-nums}
+.c2 .ww-objs li.also{color:#6A6860;font-size:13px}
+.c2 .ww-objs li.also .mk{border-color:#9A988F}
+.c2 .ww-objs li.is-complete .mk{background:#F5C400}
+.c2 .ww-objs li.is-complete .n{text-decoration:line-through}
+.c2 .ww-objs li.bump .mk{animation:ww-bump .5s ease-out}
+@keyframes ww-bump{0%{background:#F5C400;transform:rotate(45deg) scale(1.6)}100%{transform:rotate(45deg)}}
+.c2 .ww-climb{margin:10px 12px 10px;padding-top:8px;border-top:1px solid #E4E2DA}
+.c2 .ww-climb svg{display:block;width:100%;height:auto}
+.c2 .ww-climb-cap{display:flex;justify-content:space-between;font-size:11px;color:#6A6860;margin-top:3px}
+.c2 .ww-arrow{display:flex;flex-direction:column;align-items:center;gap:4px}
+.c2 .ww-diamond{position:relative;width:76px;height:76px;display:grid;place-items:center}
+.c2 .ww-diamond::before{content:"";position:absolute;inset:13px;background:#F5C400;border:3px solid #FAFAF6;transform:rotate(45deg);box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.c2 .ww-diamond svg{position:relative;width:32px;height:32px;fill:#1F1E1B;transform:rotate(-40deg)}
+.c2 .ww-arrow-label{background:#1F1E1B;color:#F5C400;font-weight:700;font-size:14px;padding:2px 9px;border-radius:2px;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* ------------------------------------------------------------------
+   3  Transit
+   ------------------------------------------------------------------ */
+.c3{font-family:"Schibsted Grotesk",sans-serif}
+.c3 .tr{position:absolute;right:24px;top:178px;width:330px;background:#F6F7F5;color:#1B1F24;border-radius:6px;box-shadow:0 10px 28px rgba(0,0,0,.4);overflow:hidden}
+.c3 .tr-head{display:flex;justify-content:space-between;align-items:baseline;padding:12px 14px 4px}
+.c3 .tr-title{font-size:21px;font-weight:800;letter-spacing:-.01em}
+.c3 .tr-meta{font-size:12px;color:#5A6068;text-align:right;font-variant-numeric:tabular-nums}
+.c3 .tr-map{display:block;width:100%;height:auto}
+.c3 .tr-map text{font-size:12.5px;fill:#1B1F24}
+.c3 .tr-map .t-now{font-size:15px;font-weight:800}
+.c3 .tr-map .t-st{font-size:13px;font-weight:600}
+.c3 .tr-map .t-sub{font-size:11.5px;fill:#5A6068}
+.c3 .tr-map .t-dim{fill:#8A9098}
+.c3 .tr-map .t-v{font-weight:600;font-variant-numeric:tabular-nums}
+.c3 .tr-map .t-v.is-complete{fill:#8A9098;text-decoration:line-through}
+.c3 .tr-map .t-v.bump{animation:tr-bump .6s ease-out}
+@keyframes tr-bump{0%{fill:#DC241F}100%{fill:#1B1F24}}
+.c3 .tr-key{font-size:11.5px;color:#5A6068;padding:8px 14px 11px;border-top:1px solid #E1E4E2}
+.c3 .tr-arrow{display:flex;flex-direction:column;align-items:center;gap:8px}
+.c3 .tr-disc{width:58px;height:58px;border-radius:50%;background:#F0B000;border:4px solid #F6F7F5;box-shadow:0 4px 10px rgba(0,0,0,.4);display:grid;place-items:center}
+.c3 .tr-disc svg{width:30px;height:30px;fill:#1B1F24;transform:rotate(-40deg)}
+.c3 .tr-pill{background:#F6F7F5;color:#1B1F24;border-radius:999px;padding:3px 12px;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.3);white-space:nowrap}
+.c3 .tr-pill b{font-weight:800;font-variant-numeric:tabular-nums}
+
+/* ------------------------------------------------------------------
+   4  The Deck
+   ------------------------------------------------------------------ */
+.c4{font-family:"Alegreya Sans",sans-serif;--lac:#1B2A41;--foil:#D9A93E;--bone:#EFE8DA}
+.c4 .dk{position:absolute;right:20px;top:176px;width:310px;height:400px}
+.c4 .card{position:absolute;left:0;top:0;width:240px;height:342px;border-radius:12px;background:radial-gradient(120% 80% at 50% 0%,#24375A,var(--lac) 60%);color:var(--bone);box-shadow:inset 0 0 0 1px var(--foil),inset 0 0 0 6px var(--lac),inset 0 0 0 7px rgba(217,169,62,.55),0 12px 26px rgba(0,0,0,.45);transition:transform .4s cubic-bezier(.2,.8,.2,1),opacity .35s,filter .35s}
+.c4 .card.pos-0{transform:translate(0,0);z-index:4}
+.c4 .card.pos-1{transform:translate(35px,26px);z-index:3;filter:brightness(.74)}
+.c4 .card.pos-2{transform:translate(70px,52px);z-index:2;filter:brightness(.56)}
+.c4 .card.pos-3{transform:translate(70px,52px);z-index:1;opacity:0}
+.c4 .card.played{transform:translate(-80px,-6px) rotate(-7deg);opacity:0;z-index:5}
+.c4 .card.no-anim{transition:none}
+.c4 .card-body{transition:opacity .3s}
+.c4 .card:not(.pos-0) .card-body,.c4 .card:not(.pos-0) .idx.tl{opacity:0}
+.c4 .card[data-suit="kill"]{--suit:#D0473D}
+.c4 .card[data-suit="collect"]{--suit:#D9A93E}
+.c4 .card[data-suit="talk"]{--suit:#9C82D6}
+.c4 .card[data-suit="travel"]{--suit:#45B0AD}
+.c4 .idx{position:absolute;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--suit);line-height:1}
+.c4 .idx.tl{left:14px;top:13px}
+.c4 .idx.br{right:14px;bottom:13px}
+.c4 .rank{font-family:"Marcellus",serif;font-size:24px}
+.c4 .idx svg{width:15px;height:15px;fill:currentColor}
+.c4 .card-body{position:absolute;inset:18px 26px 18px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.c4 .emblem{width:40px;height:40px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--foil);display:grid;place-items:center;color:var(--suit);margin-bottom:10px;flex:none}
+.c4 .emblem svg{width:22px;height:22px;fill:currentColor}
+.c4 .card h4{font-family:"Marcellus",serif;font-weight:400;font-size:19px;line-height:1.2;margin:0 0 4px;color:var(--bone)}
+.c4 .card .q{font-style:italic;color:var(--foil);font-size:13.5px;margin:0 0 12px}
+.c4 .prow{width:100%;margin-bottom:8px}
+.c4 .prow-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+.c4 .prow-top b{font-weight:700;font-variant-numeric:tabular-nums}
+.c4 .prow.is-complete .prow-top{color:var(--foil)}
+.c4 .pips{display:flex;gap:4px}
+.c4 .pips i{width:7px;height:7px;transform:rotate(45deg);box-shadow:inset 0 0 0 1px rgba(217,169,62,.55)}
+.c4 .pips i.on{background:var(--suit);box-shadow:none}
+.c4 .pips i.new{animation:dk-pip .45s ease-out}
+@keyframes dk-pip{0%{transform:rotate(45deg) scale(2.2)}100%{transform:rotate(45deg) scale(1)}}
+.c4 .orn{width:70%;height:9px;margin:4px auto 8px;background:linear-gradient(var(--foil),var(--foil)) center/100% 1px no-repeat;position:relative;flex:none}
+.c4 .orn::after{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;background:var(--lac);box-shadow:inset 0 0 0 1px var(--foil);transform:translate(-50%,-50%) rotate(45deg)}
+.c4 .tip{font-size:13.5px;line-height:1.35;color:rgba(239,232,218,.86)}
+.c4 .where{margin-top:auto;font-size:12px;color:rgba(239,232,218,.68);font-variant-numeric:tabular-nums}
+.c4 .dk-compass{display:flex;flex-direction:column;align-items:center;gap:6px}
+.c4 .dk-dial{width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#24375A,var(--lac));box-shadow:inset 0 0 0 1px var(--foil),inset 0 0 0 4px var(--lac),inset 0 0 0 5px rgba(217,169,62,.5),0 4px 12px rgba(0,0,0,.45);display:grid;place-items:center}
+.c4 .dk-dial svg{width:44px;height:44px;transform:rotate(-40deg)}
+.c4 .dk-dist{font-family:"Marcellus",serif;font-size:18px;color:var(--bone);text-shadow:0 0 2px rgba(0,0,0,.95),0 1px 5px rgba(0,0,0,.8)}
+
+/* ------------------------------------------------------------------
+   5  G.O.A.T. Mk II
+   ------------------------------------------------------------------ */
+.c5{font-family:"VT323",monospace;--ph:#FFB43A;font-variant-ligatures:none}
+.c5 .gt{position:absolute;right:24px;top:178px;width:318px;padding:12px;border-radius:10px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px),linear-gradient(180deg,#4A5155,#2E3337);box-shadow:inset 0 0 0 2px #7C6437,inset 0 0 0 4px #C9A56A,inset 0 0 0 5px #5A4524,0 12px 28px rgba(0,0,0,.5)}
+.c5 .gt::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:
+  radial-gradient(circle at 13px 13px,#E4C992 0 2.5px,#5A4524 3.2px,transparent 4px),
+  radial-gradient(circle at calc(100% - 13px) 13px,#E4C992 0 2.5px,#5A4524 3.2px,transparent 4px),
+  radial-gradient(circle at 13px calc(100% - 13px),#E4C992 0 2.5px,#5A4524 3.2px,transparent 4px),
+  radial-gradient(circle at calc(100% - 13px) calc(100% - 13px),#E4C992 0 2.5px,#5A4524 3.2px,transparent 4px)}
+.c5 .gt-plate{margin:4px 14px 10px;padding:5px 10px 5px;border-radius:3px;background:linear-gradient(180deg,#E0C284,#A8844B);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 2px rgba(0,0,0,.5);color:#3A2A10;text-align:center;font-family:"Saira Stencil One",sans-serif;text-shadow:0 1px 0 rgba(255,255,255,.35);line-height:1.15}
+.c5 .gt-plate b{display:block;font-weight:400;font-size:18px}
+.c5 .gt-plate small{display:block;font-size:10px;opacity:.8}
+.c5 .gt-crt{position:relative;background:radial-gradient(120% 100% at 50% 40%,#2A1C08,#140D04 70%);border-radius:14px/18px;padding:10px 13px;box-shadow:inset 0 0 18px rgba(0,0,0,.9),inset 0 0 0 2px #0B0703,0 0 0 3px #22262A;color:var(--ph);font-size:19px;line-height:1.08;text-shadow:0 0 5px rgba(255,150,20,.55);overflow:hidden}
+.c5 .gt-crt::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px);pointer-events:none}
+.c5 .gt-l{display:flex;gap:6px;white-space:nowrap}
+.c5 .gt-l .lead{flex:1;border-bottom:2px dotted rgba(255,180,58,.3);margin-bottom:5px}
+.c5 .gt-l.dim{color:#B8792A}
+.c5 .gt-l.hd{margin-top:6px}
+.c5 .gt-l.ind{padding-left:14px}
+.c5 .gt-l.is-complete .val::after{content:" ok"}
+.c5 .gt-l.bump{animation:gt-bump .45s steps(3)}
+@keyframes gt-bump{0%{color:#FFF1D0}50%{color:#FFB43A}75%{color:#FFF1D0}100%{color:#FFB43A}}
+.c5 .gt-tallies{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:11px}
+.c5 .tally{text-align:center}
+.c5 .drums{display:inline-flex;gap:2px;padding:3px;border-radius:3px;background:#15181A;box-shadow:inset 0 1px 3px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.1)}
+.c5 .drum{--dh:30px;width:22px;height:var(--dh);overflow:hidden;border-radius:2px;background:linear-gradient(180deg,#8E8C86,#F1EFE9 32%,#F1EFE9 68%,#8E8C86);color:#1A1A1A;font-family:"Saira Stencil One",sans-serif;font-size:21px;text-align:center}
+.c5 .strip{display:flex;flex-direction:column;transform:translateY(calc(var(--d, 0) * var(--dh) * -1));transition:transform .5s cubic-bezier(.3,1.3,.5,1)}
+.c5 .strip span{height:var(--dh);line-height:var(--dh)}
+.c5 .tally label{display:block;margin-top:4px;font-family:"Saira Stencil One",sans-serif;font-size:11px;color:#D9C7A0}
+.c5 .gt-scope{display:flex;flex-direction:column;align-items:center;gap:7px}
+.c5 .gt-bezel{width:118px;height:118px;border-radius:50%;padding:10px;background:conic-gradient(from 20deg,#8C6A36,#E4C992,#9C7A42,#D9BB80,#7A5A2A,#E4C992,#8C6A36);box-shadow:0 6px 14px rgba(0,0,0,.5),inset 0 0 0 1px rgba(0,0,0,.4)}
+.c5 .gt-glass{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;background:
+  repeating-radial-gradient(circle,transparent 0 15px,rgba(255,180,58,.2) 15px 16px),
+  linear-gradient(rgba(255,180,58,.2),rgba(255,180,58,.2)) center/1px 100% no-repeat,
+  linear-gradient(rgba(255,180,58,.2),rgba(255,180,58,.2)) center/100% 1px no-repeat,
+  radial-gradient(circle,#2A1C08,#120B03);box-shadow:inset 0 0 12px rgba(0,0,0,.9)}
+.c5 .gt-sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(255,180,58,.42),rgba(255,180,58,0) 70deg,transparent);animation:gt-spin 4s linear infinite}
+@keyframes gt-spin{to{transform:rotate(360deg)}}
+.c5 .gt-blip{position:absolute;width:6px;height:6px;border-radius:50%;background:#FFB43A;box-shadow:0 0 6px 2px rgba(255,160,30,.7);transform:translate(-50%,-50%);opacity:.55}
+.c5 .gt-blip.main{width:10px;height:10px;opacity:1}
+.c5 .gt-you{position:absolute;left:50%;top:50%;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:10px solid #FFE0A8;transform:translate(-50%,-50%)}
+.c5 .gt-readout{font-size:21px;line-height:1.1;color:var(--ph);background:#140D04;padding:0 10px;border-radius:3px;box-shadow:0 0 0 2px #7C6437,0 3px 8px rgba(0,0,0,.5);text-shadow:0 0 5px rgba(255,150,20,.6)}
+
+/* ------------------------------------------------------------------
+   6  Guiding Wind
+   ------------------------------------------------------------------ */
+.c6{font-family:"Spectral",serif}
+.c6 .gw-edge{position:absolute;left:-230px;top:-120px;width:640px;height:560px;background:radial-gradient(closest-side,rgba(255,206,110,.72),rgba(255,206,110,.32) 45%,rgba(255,206,110,0));pointer-events:none}
+.c6 .gw-streaks{position:absolute;left:0;top:70px;width:380px;height:320px;overflow:visible;pointer-events:none}
+.c6 .gw-streaks path{fill:none;stroke:url(#g-wind);stroke-width:2.6;stroke-linecap:round}
+.c6 .gw-mark{position:absolute;left:26px;top:150px;display:flex;align-items:center;gap:8px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 10px rgba(0,0,0,.35)}
+.c6 .gw-mark svg{width:34px;height:34px;transform:rotate(-40deg);fill:none;stroke:#fff;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 2px rgba(0,0,0,.8))}
+.c6 .gw-mark span{font-size:21px;font-weight:500;font-variant-numeric:tabular-nums}
+.c6 .gw-sub{position:absolute;left:50%;bottom:66px;transform:translateX(-50%);width:760px;text-align:center;color:#fff;text-shadow:0 0 2px rgba(0,0,0,.9),0 1px 8px rgba(0,0,0,.75),0 0 22px rgba(0,0,0,.45)}
+.c6 .gw-quest{font-style:italic;font-size:15px;color:#E6DECB}
+.c6 .gw-line{margin:0 0 7px!important;font-size:25px;font-weight:500;line-height:1.2}
+.c6 .gw-meta{display:flex;justify-content:center;align-items:center;gap:26px;font-size:14px}
+.c6 .gw-count{display:flex;align-items:center;gap:8px}
+.c6 .gw-count .pips{display:flex;gap:3px}
+.c6 .gw-count .pips i{width:2px;height:11px;background:rgba(255,255,255,.35);box-shadow:0 0 3px rgba(0,0,0,.8)}
+.c6 .gw-count .pips i.on{background:#fff}
+.c6 .gw-count .pips i.new{animation:gw-tick .6s ease-out}
+@keyframes gw-tick{0%{background:#F1D08A;transform:scaleY(1.9)}100%{transform:none}}
+.c6 .gw-count b{font-weight:500;font-variant-numeric:tabular-nums}
+.c6 .gw-count.is-complete{color:#F1D08A}
+.c6 .gw-key{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-style:italic;font-size:13.5px;color:#E6DECB}
+.c6 .gw-key kbd{font-family:"Spectral",serif;font-style:normal;font-size:11.5px;padding:0 5px;border:1px solid rgba(255,255,255,.6);border-radius:3px;background:rgba(0,0,0,.35);text-shadow:none;color:#fff}
+.c6 .gw-key:focus-visible{outline:1px solid #fff;outline-offset:3px}
+.c6 .gw-drawer{position:absolute;left:0;top:84px;bottom:0;width:390px;padding:22px 34px 40px 28px;background:linear-gradient(90deg,rgba(6,6,8,.88),rgba(6,6,8,.74) 66%,rgba(6,6,8,0));color:#E6DECB;transform:translateX(-102%);visibility:hidden;transition:transform .38s cubic-bezier(.2,.8,.2,1),visibility 0s .38s;z-index:5}
+.c6.drawer-open .gw-drawer{transform:none;visibility:visible;transition:transform .38s cubic-bezier(.2,.8,.2,1)}
+.c6 .gw-mark,.c6 .gw-streaks{transition:opacity .25s}
+.c6.drawer-open .gw-mark,.c6.drawer-open .gw-streaks{opacity:0}
+.c6 .gw-drawer h4{font-weight:500;font-size:21px;color:#fff}
+.c6 .gw-d-sub{margin:0 0 14px!important;font-style:italic;font-size:13.5px}
+.c6 .gw-steps li{display:grid;grid-template-columns:28px 1fr;gap:4px;padding:5px 0;font-size:15px;line-height:1.35;color:rgba(230,222,203,.72)}
+.c6 .gw-steps li > span:first-child{font-variant-numeric:tabular-nums;color:rgba(230,222,203,.5);font-size:13px;padding-top:2px}
+.c6 .gw-steps li.done{color:rgba(230,222,203,.45)}
+.c6 .gw-steps li.cur{color:#fff}
+.c6 .gw-steps li.cur > span:first-child{color:#F1D08A}
+.c6 .gw-steps em{display:block;font-size:13px;color:#F1D08A}
+.c6 .gw-along{margin-top:14px!important;padding-top:12px;border-top:1px solid rgba(230,222,203,.18);font-size:13.5px;font-style:italic}
+
+/* ------------------------------------------------------------------
+   7  Halo
+   ------------------------------------------------------------------ */
+.c7{font-family:"Atkinson Hyperlegible",sans-serif}
+.c7 .hl-ring{position:absolute;left:490px;top:480px;width:300px;height:130px;overflow:visible}
+.c7 .hl-ring .ring{fill:none;stroke:rgba(247,245,240,.62);stroke-width:2}
+.c7 .hl-ring .ring-shadow{fill:none;stroke:rgba(0,0,0,.3);stroke-width:5}
+.c7 .hl-ring .under{fill:none;stroke:rgba(20,14,4,.6);stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+.c7 .hl-ring .arc{fill:none;stroke:#FFC83D;stroke-width:4;stroke-linecap:round}
+.c7 .hl-ring .chev{fill:none;stroke:#FFC83D;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.c7 .hl-ring text{font-family:"Atkinson Hyperlegible",sans-serif;font-weight:700;font-size:16px;fill:#fff;stroke:rgba(0,0,0,.65);stroke-width:3.5px;paint-order:stroke;stroke-linejoin:round}
+.c7 .hl-meters{position:absolute;left:704px;top:402px;display:flex;flex-direction:column;gap:9px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 8px rgba(0,0,0,.4)}
+.c7 .hl-meters li{display:flex;align-items:center;gap:9px}
+.c7 .hl-arc{width:34px;height:34px;flex:none;overflow:visible}
+.c7 .hl-arc circle{fill:none}
+.c7 .hl-arc .bg{stroke:rgba(0,0,0,.35);stroke-width:7}
+.c7 .hl-arc .trk{stroke:rgba(255,255,255,.28);stroke-width:4}
+.c7 .hl-arc .val{stroke:#FFC83D;stroke-width:4;stroke-dasharray:calc(var(--v) * 100) 100;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dasharray .4s}
+.c7 .hl-meters b{display:block;font-size:17px;line-height:1.05;font-variant-numeric:tabular-nums}
+.c7 .hl-meters small{display:block;font-size:12.5px;color:#EEEAE0}
+.c7 .hl-meters li.minor .hl-arc{width:26px;height:26px;margin:0 4px}
+.c7 .hl-meters li.minor b{font-size:14px}
+.c7 .hl-meters li.is-complete .val{stroke:#fff}
+.c7 .hl-meters li.bump .hl-arc{animation:hl-bump .5s ease-out}
+@keyframes hl-bump{0%{transform:scale(1.3)}100%{transform:none}}
+.c7 .hl-top{position:absolute;left:50%;top:22px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9)}
+.c7 .hl-top-line{display:flex;gap:14px;align-items:baseline;font-size:14px}
+.c7 .hl-top-line b{font-size:15px}
+.c7 .hl-steps{width:190px;height:3px;background:rgba(255,255,255,.32);box-shadow:0 1px 2px rgba(0,0,0,.5)}
+.c7 .hl-steps i{display:block;height:100%;width:18.75%;background:#FFC83D}
+.c7 .hl-then{font-size:12.5px;color:#EEEAE0}
+
+/* ------------------------------------------------------------------
+   8  Forgeworks
+   ------------------------------------------------------------------ */
+.c8{font-family:"Grenze",serif;--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.c8 .fw{position:absolute;right:24px;top:178px;width:314px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.55))}
+.c8 .fw-slab{padding:20px 22px 16px;color:#C9CED3;clip-path:polygon(2% 1%,38% 0,70% 1%,97% 0,100% 5%,99% 38%,100% 80%,98% 98%,88% 100%,52% 99%,18% 100%,1% 99%,0 88%,1% 46%,0 6%);background:var(--noise),radial-gradient(130% 90% at 25% 0%,#495057,#343A3F 55%,#272B2F)}
+.c8 .fw-zone{font-family:"Grenze Gotisch",serif;font-weight:700;font-size:37px;line-height:1;color:#A6AEB5;text-shadow:0 -1px 0 rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.13)}
+.c8 .fw-meta{display:flex;justify-content:space-between;font-size:13.5px;color:#A1A8AF;margin-top:6px}
+.c8 .fw-groove{height:3px;margin:12px 0;border-radius:2px;background:#1B1E21;box-shadow:inset 0 1px 2px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08)}
+.c8 .fw-done{display:flex;gap:7px;align-items:center;margin:0 0 11px!important;font-size:13.5px;color:#E8B04B;text-shadow:0 0 6px rgba(232,176,75,.25)}
+.c8 .fw-done svg{width:12px;height:12px}
+.c8 .fw-quest{margin:0 0 8px!important;font-weight:600;font-size:16px;color:#DDE1E4}
+.c8 .fw-row{display:flex;justify-content:space-between;align-items:baseline;font-size:14.5px}
+.c8 .fw-row b{font-weight:600;color:#FFC766;font-variant-numeric:tabular-nums;text-shadow:0 0 8px rgba(255,150,40,.4)}
+.c8 .fw-chan{height:10px;margin:5px 0 12px;border-radius:5px;background:#16191C;box-shadow:inset 0 2px 3px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.09)}
+.c8 .fw-chan i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#9E2E0C,#E2561A 35%,#FFB02E 78%,#FFF1B8);box-shadow:0 0 10px 1px rgba(255,120,30,.55),inset 0 1px 0 rgba(255,255,255,.35);transition:width .6s cubic-bezier(.3,.8,.3,1)}
+.c8 .fw-obj.minor .fw-row{font-size:13.5px;color:#A7AEB5}
+.c8 .fw-obj.minor .fw-chan{height:6px}
+.c8 .fw-obj.is-complete .fw-row span{color:#E8B04B}
+.c8 .fw-obj.is-complete .fw-chan i{background:linear-gradient(90deg,#B8862E,#F2C45A 60%,#FFE39A);box-shadow:0 0 6px rgba(232,176,75,.4),inset 0 1px 0 rgba(255,255,255,.4)}
+.c8 .fw-obj.bump .fw-chan i{animation:fw-flare .8s ease-out}
+@keyframes fw-flare{0%{filter:brightness(1.9) saturate(1.3);box-shadow:0 0 24px 6px rgba(255,150,40,.9)}100%{filter:none}}
+.c8 .fw-next{margin-top:4px!important;padding-top:10px;border-top:1px solid rgba(0,0,0,.4);font-size:13.5px;color:#8E969D}
+.c8 .fw-next b{color:#C9CED3;font-weight:500}
+.c8 .fw-stone{display:flex;flex-direction:column;align-items:center;gap:4px}
+.c8 .fw-stone-wrap{filter:drop-shadow(0 5px 8px rgba(0,0,0,.55))}
+.c8 .fw-stone-body{width:74px;height:74px;display:grid;place-items:center;clip-path:polygon(50% 0,92% 20%,100% 62%,74% 100%,24% 97%,0 60%,10% 18%);background:var(--noise),radial-gradient(circle at 40% 30%,#555D64,#2C3034)}
+.c8 .fw-stone-body svg{width:40px;height:40px;transform:rotate(-40deg);filter:drop-shadow(0 0 5px rgba(255,140,30,.9))}
+.c8 .fw-stone-dist{font-weight:600;font-size:19px;color:#FFC766;text-shadow:0 0 2px rgba(0,0,0,.95),0 1px 5px rgba(0,0,0,.85)}
+
+/* ------------------------------------------------------------------
+   9  Standard
+   ------------------------------------------------------------------ */
+.c9{font-family:"Vollkorn",serif;font-variant-numeric:lining-nums;--cloth:#1F3A7A;--trim:#D9B24C;--thread:#F3EBD8;--gold:#EAC35B;--crest-bg:#D9B24C;--crest-ink:#1F3A7A}
+.c9[data-faction="horde"]{--cloth:#7E1A17;--trim:#2A2524;--thread:#F1E4CF;--gold:#E6A845;--crest-bg:#2A2524;--crest-ink:#D8B26A}
+.c9 .sd{position:absolute;left:876px;top:0;width:250px}
+.c9 .sd-rod{position:relative;height:9px;margin-top:10px;border-radius:5px;background:linear-gradient(180deg,#E7C979,#9A7433);box-shadow:0 2px 4px rgba(0,0,0,.5);z-index:2}
+.c9 .sd-rod::before,.c9 .sd-rod::after{content:"";position:absolute;top:50%;width:15px;height:15px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#F4DDA0,#8F6A2C);transform:translateY(-50%)}
+.c9 .sd-rod::before{left:-7px}
+.c9 .sd-rod::after{right:-7px}
+.c9 .sd-cloth-wrap{margin:-3px 14px 0;filter:drop-shadow(0 8px 12px rgba(0,0,0,.45))}
+.c9 .sd-cloth{position:relative;height:486px;padding:20px 22px 0;color:var(--thread);clip-path:polygon(0 0,100% 0,100% 100%,50% 91%,0 100%);background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(255,255,255,.06) 16%,rgba(0,0,0,.1) 32%,rgba(255,255,255,.07) 52%,rgba(0,0,0,.16) 74%,rgba(255,255,255,.04) 88%,rgba(0,0,0,.3)),var(--cloth)}
+.c9 .sd-cloth::before{content:"";position:absolute;inset:14px 7px 74px;border:1.5px dashed var(--trim);pointer-events:none}
+.c9 .sd-cloth::after{content:"";position:absolute;left:0;right:0;top:0;height:8px;background:var(--trim)}
+.c9 .sd-crest{width:58px;height:58px;margin:6px auto 9px;border-radius:50%;background:var(--crest-bg);display:grid;place-items:center;box-shadow:0 0 0 3px var(--cloth),0 0 0 4.5px var(--trim)}
+.c9 .sd-crest svg{width:38px;height:38px;fill:var(--crest-ink)}
+.c9 .sd-zone{text-align:center;font-family:"IM Fell English SC",serif;font-weight:400;font-size:28px;line-height:1.05}
+.c9 .sd-lv{margin:3px 0 14px!important;text-align:center;font-style:italic;font-size:13px;opacity:.82}
+.c9 .sd-steps{font-size:13.5px;line-height:1.35}
+.c9 .sd-steps li{margin-bottom:9px}
+.c9 .sd-steps li.done{display:flex;gap:7px;opacity:.62}
+.c9 .sd-steps li.done svg{width:12px;height:12px;flex:none;margin-top:3px;color:var(--gold)}
+.c9 .sd-steps li.cur{padding:9px 10px 10px;background:rgba(0,0,0,.2);border:1.5px dashed var(--gold);border-radius:2px}
+.c9 .sd-q{display:block;font-style:italic;font-weight:600;color:var(--gold);margin-bottom:5px}
+.c9 .sd-o{display:flex;justify-content:space-between}
+.c9 .sd-o b{font-weight:600;font-variant-numeric:lining-nums tabular-nums}
+.c9 .sd-o.minor{font-size:12.5px;opacity:.82;margin-top:6px}
+.c9 .sd-o.is-complete{color:var(--gold)}
+.c9 .stitches{display:flex;gap:3px;margin:4px 0 7px}
+.c9 .stitches i{width:7px;height:2px;border-radius:1px;background:var(--thread);opacity:.25}
+.c9 .stitches i.on{opacity:1;background:var(--gold)}
+.c9 .stitches i.new{animation:sd-st .5s ease-out;transform-origin:left}
+@keyframes sd-st{0%{transform:scaleX(0)}100%{transform:none}}
+.c9 .sd-steps li.next{opacity:.74;font-size:13px}
+.c9 .sd-shield{display:flex;flex-direction:column;align-items:center;gap:3px}
+.c9 .sd-shield svg{width:62px;height:72px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}
+.c9 .sd-shield .sh{fill:var(--cloth);stroke:var(--trim);stroke-width:3}
+.c9 .sd-shield .ar{fill:var(--thread)}
+.c9 .sd-dist{font-family:"IM Fell English SC",serif;font-size:20px;color:#fff;text-shadow:0 0 2px rgba(0,0,0,.95),0 1px 5px rgba(0,0,0,.8)}
+
+/* ------------------------------------------------------------------
+   10  Starchart
+   ------------------------------------------------------------------ */
+.c10{font-family:"Josefin Sans",sans-serif;--star:#E6ECFF;--silver:#A9B4D6;--violet:#9C8CFF;--well:#6FE3D6}
+.c10 .st{position:absolute;right:32px;top:180px;width:276px}
+.c10 .st-chart{width:250px;height:250px;margin:0 auto;border-radius:50%;background:radial-gradient(circle at 50% 42%,#1D2660,#121A45 58%,#0C1233);box-shadow:0 0 0 1px rgba(169,180,214,.55),0 0 0 6px rgba(16,22,58,.6),0 0 0 7px rgba(169,180,214,.25),0 12px 30px rgba(0,0,0,.45)}
+.c10 .st-chart svg{display:block;width:100%;height:100%}
+.c10 .st-rim{fill:none;stroke:rgba(169,180,214,.5);stroke-width:1;stroke-dasharray:1 7.24}
+.c10 .st-orbit{fill:none;stroke:rgba(169,180,214,.12)}
+.c10 .st-bg circle{fill:#C8D2F2}
+.c10 .st-done-line{fill:none;stroke:rgba(230,236,255,.75);stroke-width:1.2}
+.c10 .st-next-line{fill:none;stroke:rgba(169,180,214,.6);stroke-width:1.2;stroke-dasharray:2 4}
+.c10 .st-star{fill:var(--star)}
+.c10 .st-future{fill:#0F1640;stroke:var(--silver);stroke-width:1.2}
+.c10 .st-now{fill:var(--well)}
+.c10 .st-now-ring{fill:none;stroke:var(--well);stroke-width:1.2;transform-box:fill-box;transform-origin:center;animation:st-pulse 2.8s ease-in-out infinite}
+@keyframes st-pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.7);opacity:.15}}
+.c10 .st-you{fill:#fff}
+.c10 .st-label{font-family:"Josefin Sans",sans-serif;font-size:9.5px;fill:var(--silver)}
+.c10 .st-label.now{fill:var(--well);font-weight:600;font-size:10.5px}
+.c10 .st-text{margin-top:16px;padding:13px 14px 12px;border-radius:10px;background:rgba(14,19,52,.84);box-shadow:inset 0 0 0 1px rgba(169,180,214,.22),0 8px 20px rgba(0,0,0,.35);color:var(--star)}
+.c10 .st-q{margin:0 0 9px!important;display:flex;justify-content:space-between;align-items:baseline;font-weight:600;font-size:15px}
+.c10 .st-q span{font-weight:400;font-size:12px;color:var(--silver)}
+.c10 .st-obj{display:grid;grid-template-columns:1fr auto;row-gap:4px;margin-bottom:9px;font-size:14px}
+.c10 .st-obj b{font-weight:600;font-variant-numeric:tabular-nums}
+.c10 .st-bar{grid-column:1/-1;height:2px;background:rgba(169,180,214,.2)}
+.c10 .st-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--well));box-shadow:0 0 6px rgba(111,227,214,.6);transition:width .4s}
+.c10 .st-obj.minor{font-size:12.5px;color:var(--silver)}
+.c10 .st-obj.is-complete b{color:var(--well)}
+.c10 .st-obj.bump .st-bar i{animation:st-bump .7s ease-out}
+@keyframes st-bump{0%{box-shadow:0 0 16px 4px rgba(111,227,214,.95)}100%{}}
+.c10 .st-then{margin-top:10px!important;padding-top:9px;border-top:1px solid rgba(169,180,214,.18);font-size:12.5px;color:var(--silver)}
+.c10 .st-arrow{display:flex;flex-direction:column;align-items:center}
+.c10 .st-disc{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 42%,#1D2660,#10163A 70%);box-shadow:0 0 0 1px rgba(169,180,214,.6),0 0 0 4px rgba(16,22,58,.55),0 6px 16px rgba(0,0,0,.4)}
+.c10 .st-arrow svg{width:66px;height:66px;filter:drop-shadow(0 0 6px rgba(156,140,255,.8))}
+.c10 .st-dist{margin-top:6px;font-size:17px;font-weight:600;color:var(--star);text-shadow:0 0 2px rgba(0,0,0,.95),0 1px 5px rgba(0,0,0,.8)}
+
+/* ------------------------------------------------------------------
+   Emblems as they appear in the lineup
+   ------------------------------------------------------------------ */
+.lineup .cb-arrow{zoom:.85}
+.lineup .ww-arrow{zoom:.8}
+.lineup .tr-arrow{zoom:.75}
+.lineup .dk-compass{zoom:.9}
+.lineup .gt-scope{zoom:.66}
+.lineup .gt-sweep{animation:none;transform:rotate(290deg)}
+.lineup .gw-mark{position:relative;left:auto;top:auto;zoom:1.15}
+.lineup .hl-ring{position:relative;left:auto;top:auto;width:180px;height:78px}
+.lineup .fw-stone{zoom:.85}
+.lineup .sd-shield{zoom:.85}
+.lineup .st-arrow{zoom:.85}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body data-scene="day">
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="g-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sky-a)"/><stop offset=".6" style="stop-color:var(--sky-b)"/><stop offset="1" style="stop-color:var(--sky-c)"/></linearGradient>
+    <radialGradient id="g-glow"><stop offset="0" style="stop-color:var(--glow)" stop-opacity=".8"/><stop offset="1" style="stop-color:var(--glow)" stop-opacity="0"/></radialGradient>
+    <linearGradient id="g-field" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--field-a)"/><stop offset="1" style="stop-color:var(--field-b)"/></linearGradient>
+    <radialGradient id="g-vig" cx=".5" cy=".45" r=".78"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" style="stop-opacity:var(--vig)"/></radialGradient>
+    <linearGradient id="g-molten" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF1B8"/><stop offset=".45" stop-color="#FFB02E"/><stop offset="1" stop-color="#E2561A"/></linearGradient>
+    <linearGradient id="g-star" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#B9B0FF"/></linearGradient>
+    <filter id="f-glow" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+
+  <symbol id="goat" viewBox="0 0 64 64">
+    <path d="M26 22 C22 12 15 6 6 3 C12 9 16 15 19 24Z"/>
+    <path d="M38 22 C42 12 49 6 58 3 C52 9 48 15 45 24Z"/>
+    <path d="M21 27 C15 24 9 24 5 26 C9 31 15 33 22 32Z"/>
+    <path d="M43 27 C49 24 55 24 59 26 C55 31 49 33 42 32Z"/>
+    <path fill-rule="evenodd" d="M21 23 C27 18 37 18 43 23 L41 40 C39 47 35 51 32 52 C29 51 25 47 23 40Z M25.5 31 L30 33.2 L26.6 34.6Z M38.5 31 L34 33.2 L37.4 34.6Z"/>
+    <path d="M27 48 L32 62 L37 48Z"/>
+  </symbol>
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="M3 8.5 L6.5 12 L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 16 16"><path fill="currentColor" fill-rule="evenodd" d="M8 1.5 C5.2 1.5 3.2 3.6 3.2 6.2 C3.2 9.6 8 14.5 8 14.5 C8 14.5 12.8 9.6 12.8 6.2 C12.8 3.6 10.8 1.5 8 1.5Z M8 4.4 A1.8 1.8 0 1 1 8 8 A1.8 1.8 0 1 1 8 4.4Z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 20 20"><path d="M10 1.8 L12.5 7.2 L18.3 7.8 L13.9 11.7 L15.2 17.5 L10 14.5 L4.8 17.5 L6.1 11.7 L1.7 7.8 L7.5 7.2Z"/></symbol>
+  <symbol id="s-kill" viewBox="0 0 24 24"><path d="M12 1.5 L14.2 4 V14.5 H9.8 V4Z M6.5 14.5 H17.5 V16.6 H6.5Z M11 16.6 H13 V20.2 H11Z"/><circle cx="12" cy="21.4" r="1.6"/></symbol>
+  <symbol id="s-collect" viewBox="0 0 24 24"><path d="M8.5 2.5 H15.5 L13.8 6 C18 7.8 20.6 12.4 19.7 16.8 C19.1 19.9 16.5 21.5 12 21.5 C7.5 21.5 4.9 19.9 4.3 16.8 C3.4 12.4 6 7.8 10.2 6Z"/></symbol>
+  <symbol id="s-talk" viewBox="0 0 24 24"><path d="M3.5 4.5 H20.5 V15.5 H11 L6 20 V15.5 H3.5Z"/></symbol>
+  <symbol id="s-travel" viewBox="0 0 24 24"><path d="M12 1.5 L14.3 9.7 L22.5 12 L14.3 14.3 L12 22.5 L9.7 14.3 L1.5 12 L9.7 9.7Z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 40 40"><path d="M20 4 L31 19 H24 V36 H16 V19 H9Z"/></symbol>
+
+  <symbol id="scene" viewBox="0 0 1600 900">
+    <rect width="1600" height="900" fill="url(#g-sky)"/>
+    <circle cx="1180" cy="250" r="230" fill="url(#g-glow)"/>
+    <circle cx="1180" cy="250" r="44" style="fill:var(--sun)"/>
+    <g style="fill:var(--cloud)">
+      <ellipse cx="300" cy="190" rx="150" ry="18" opacity=".45"/>
+      <ellipse cx="385" cy="174" rx="90" ry="14" opacity=".4"/>
+      <ellipse cx="1420" cy="140" rx="120" ry="14" opacity=".35"/>
+      <ellipse cx="820" cy="112" rx="200" ry="12" opacity=".25"/>
+    </g>
+    <path d="M0 470 C120 440 250 418 390 446 S650 408 790 436 S1070 398 1230 430 S1490 410 1600 436 V900 H0Z" style="fill:var(--far)"/>
+    <path d="M0 548 C150 508 300 480 470 508 S760 548 920 512 S1250 478 1400 512 S1560 526 1600 520 V900 H0Z" style="fill:var(--mid)"/>
+    <g style="fill:var(--tree)">
+      <ellipse cx="236" cy="512" rx="34" ry="30"/><ellipse cx="270" cy="518" rx="26" ry="22"/>
+      <ellipse cx="1020" cy="506" rx="30" ry="28"/><ellipse cx="1048" cy="512" rx="22" ry="20"/>
+      <ellipse cx="1356" cy="508" rx="28" ry="26"/>
+    </g>
+    <g style="fill:var(--sil)">
+      <path d="M452 514 L461 430 L479 430 L488 514Z"/>
+      <path d="M456 432 L470 410 L484 432Z"/>
+      <g transform="translate(470 428) rotate(18)">
+        <rect x="-3" y="-86" width="6" height="172"/>
+        <rect x="-86" y="-3" width="172" height="6"/>
+        <rect x="3" y="-84" width="16" height="60" opacity=".85"/>
+        <rect x="-84" y="-19" width="60" height="16" opacity=".85"/>
+        <rect x="-19" y="24" width="16" height="60" opacity=".85"/>
+        <rect x="24" y="3" width="60" height="16" opacity=".85"/>
+      </g>
+    </g>
+    <path d="M0 610 C300 580 600 566 800 568 S1300 580 1600 598 V900 H0Z" fill="url(#g-field)"/>
+    <g style="stroke:var(--rows)" stroke-width="3" opacity=".3" fill="none">
+      <path d="M580 580 L-900 900"/><path d="M610 580 L-620 900"/><path d="M640 579 L-340 900"/><path d="M670 578 L-60 900"/>
+      <path d="M700 577 L220 900"/><path d="M730 577 L500 900"/><path d="M760 576 L780 900"/><path d="M790 576 L1060 900"/>
+      <path d="M820 576 L1340 900"/><path d="M850 577 L1620 900"/><path d="M880 577 L1900 900"/><path d="M910 578 L2180 900"/>
+    </g>
+    <path d="M620 900 C680 800 760 700 812 600 C818 588 824 580 832 574 L842 574 C838 582 834 592 830 604 C810 700 800 800 880 900Z" style="fill:var(--road)"/>
+    <g transform="translate(800 700)">
+      <ellipse cx="0" cy="2" rx="50" ry="12" fill="#000" opacity=".28"/>
+      <g style="fill:var(--char)">
+        <path d="M-20 0 L-15 -72 L-3 -72 L-6 0Z"/>
+        <path d="M6 0 L3 -72 L15 -72 L20 0Z"/>
+        <path d="M-34 -40 L-31 -44 L30 -176 L26 -179Z"/>
+        <path d="M20 -168 L36 -160 L37 -163 L21 -171Z"/>
+        <path d="M-34 -132 C-44 -96 -48 -58 -40 -44 C-20 -38 20 -38 40 -44 C48 -58 44 -96 34 -132 C22 -146 -22 -146 -34 -132Z"/>
+        <ellipse cx="-33" cy="-134" rx="17" ry="11"/>
+        <ellipse cx="33" cy="-134" rx="17" ry="11"/>
+        <circle cx="0" cy="-158" r="17"/>
+      </g>
+      <g fill="none" style="stroke:var(--rim)" stroke-width="2" opacity=".55">
+        <path d="M34 -132 C44 -96 48 -58 40 -44"/>
+        <path d="M11 -170 A17 17 0 0 1 17 -156"/>
+        <path d="M44 -138 A17 11 0 0 1 48 -130"/>
+      </g>
+    </g>
+    <rect width="1600" height="900" fill="url(#g-vig)"/>
+  </symbol>
+</svg>
+
+<header class="intro">
+  <div class="wrap">
+    <div class="brand"><span class="brand-mark"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#goat"/></svg></span>GoatQuest</div>
+    <h1>Ten looks for the guide viewer</h1>
+    <p class="lede">Every mockup shows the same moment: step 12 of 64 in Westfall (13–15), clearing Defias Trappers and Smugglers for The People's Militia. The words and numbers never change, so you're only comparing the design.</p>
+    <p class="lede">Switch the backdrop to night to check contrast, kill a Defias Trapper to watch each design count it, and shortlist the ones worth building. Copy the shortlist and send it back.</p>
+    <nav class="lineup" aria-label="Jump to a design">
+      <a class="tile" href="#c1" data-id="1"><div class="tile-art c1"></div><span class="tile-cap"><span class="tile-num">1</span>Classbound</span></a>
+      <a class="tile" href="#c2" data-id="2"><div class="tile-art c2"></div><span class="tile-cap"><span class="tile-num">2</span>Wanderweg</span></a>
+      <a class="tile" href="#c3" data-id="3"><div class="tile-art c3"></div><span class="tile-cap"><span class="tile-num">3</span>Transit</span></a>
+      <a class="tile" href="#c4" data-id="4"><div class="tile-art c4"></div><span class="tile-cap"><span class="tile-num">4</span>The Deck</span></a>
+      <a class="tile" href="#c5" data-id="5"><div class="tile-art c5"></div><span class="tile-cap"><span class="tile-num">5</span>G.O.A.T. Mk II</span></a>
+      <a class="tile" href="#c6" data-id="6"><div class="tile-art c6"></div><span class="tile-cap"><span class="tile-num">6</span>Guiding Wind</span></a>
+      <a class="tile" href="#c7" data-id="7"><div class="tile-art c7"></div><span class="tile-cap"><span class="tile-num">7</span>Halo</span></a>
+      <a class="tile" href="#c8" data-id="8"><div class="tile-art c8"></div><span class="tile-cap"><span class="tile-num">8</span>Forgeworks</span></a>
+      <a class="tile" href="#c9" data-id="9"><div class="tile-art c9" data-faction="alliance"></div><span class="tile-cap"><span class="tile-num">9</span>Standard</span></a>
+      <a class="tile" href="#c10" data-id="10"><div class="tile-art c10"></div><span class="tile-cap"><span class="tile-num">10</span>Starchart</span></a>
+    </nav>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap tb">
+    <div class="tb-group">
+      <span class="tb-label" id="bd-label">Backdrop</span>
+      <div class="seg" role="group" aria-labelledby="bd-label">
+        <button type="button" data-scene-btn="day" aria-pressed="true">Day</button>
+        <button type="button" data-scene-btn="night" aria-pressed="false">Night</button>
+      </div>
+    </div>
+    <div class="tb-group">
+      <button type="button" class="btn" id="kill">Kill a Defias Trapper</button>
+      <span class="kill-count" aria-hidden="true"><b data-bind="trap">9</b> of 15</span>
+      <button type="button" class="btn quiet" id="reset" disabled>Reset</button>
+    </div>
+    <div class="tb-group">
+      <span id="sl-summary">Shortlist is empty</span>
+      <button type="button" class="btn quiet" id="sl-copy" disabled>Copy shortlist</button>
+    </div>
+  </div>
+</div>
+<p class="vh" id="live" aria-live="polite"></p>
+
+<main>
+
+<!-- ============================================================== 1 -->
+<section class="concept" id="c1" aria-labelledby="c1-name">
+<div class="wrap">
+  <header class="c-head">
+    <span class="c-num">1</span>
+    <div><h2 id="c1-name">Classbound</h2><p class="c-pitch">Flat, quiet and exact, in the spirit of the modern UI suites. The only colour on the panel is your class colour.</p></div>
+    <button class="shortlist" type="button" aria-pressed="false" data-id="1" data-name="Classbound"><svg aria-hidden="true"><use href="#i-star"/></svg><span>Shortlist</span></button>
+  </header>
+  <div class="stage-scroll"><div class="stage" role="group" aria-label="Classbound on the game screen">
+    <div class="screen c1">
+      <div class="arrow-slot"><div class="cb-arrow" data-emblem>
+        <svg class="cb-chev" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5 L41 40 L24 31 L7 40Z"/></svg>
+        <div class="cb-dist">84 yd</div>
+        <div class="cb-target">Defias Trappers</div>
+      </div></div>
+      <div class="cb">
+        <div class="cb-head">
+          <div class="cb-title"><span class="cb-guide">Westfall</span><span class="cb-range">13–15</span></div>
+          <div class="cb-nav">
+            <button type="button" aria-label="Previous step"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 L5 8 L10 13"/></svg></button>
+            <span class="cb-step">12<span> / 64</span></span>
+            <button type="button" aria-label="Next step"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3 L11 8 L6 13"/></svg></button>
+          </div>
+        </div>
+        <div class="cb-progress"><i></i></div>
+        <div class="cb-done"><svg aria-hidden="true"><use href="#i-check"/></svg>Accepted Red Leather Bandanas</div>
+        <div class="cb-sec">
+          <div class="cb-quest">The People's Militia</div>
+          <div class="cb-obj" data-obj="trap"><span class="n">Defias Trapper</span><span class="v"><span data-bind="trap">9</span>/15</span><span class="bar"><i class="p-trap"></i></span></div>
+          <div class="cb-obj"><span class="n">Defias Smuggler</span><span class="v">11/15</span><span class="bar"><i style="width:73.3%"></i></span></div>
+          <div class="cb-loc"><svg aria-hidden="true"><use href="#i-pin"/></svg>48.4, 45.4, west of Sentinel Hill</div>
+          <div class="cb-sub">Along the way</div>
+          <div class="cb-obj sm"><span class="n">Red Leather Bandana</span><span class="v">6/15</span><span class="bar"><i style="width:40%"></i></span></div>
+          <div class="cb-obj sm"><span class="n">Goretusk Liver</span><span class="v">5/8</span><span class="bar"><i style="width:62.5%"></i></span></div>
+          <div class="cb-obj sm is-complete"><span class="n">Handful of Oats</span><span class="v">8/8</span><span class="bar"><i style="width:100%"></i></span></div>
+        </div>
+        <div class="cb-next"><span>Then</span>Loot Furlbrow's Pocket Watch</div>
+      </div>
+    </div>
+    <button class="fs-btn" type="button">Full screen</button>
+  </div></div>
+  <div class="try" role="group" aria-labelledby="c1-try">
+    <span class="try-label" id="c1-try">Your class</span>
+    <button type="button" class="chip" data-class="Druid" data-color="#FF7C0A" aria-pressed="false"><i style="--c:#FF7C0A"></i>Druid</button>
+    <button type="button" class="chip" data-class="Hunter" data-color="#AAD372" aria-pressed="false"><i style="--c:#AAD372"></i>Hunter</button>
+    <button type="button" class="chip" data-class="Mage" data-color="#3FC7EB" aria-pressed="false"><i style="--c:#3FC7EB"></i>Mage</button>
+    <button type="button" class="chip" data-class="Paladin" data-color="#F48CBA" aria-pressed="true"><i style="--c:#F48CBA"></i>Paladin</button>
+    <button type="button" class="chip" data-class="Priest" data-color="#FFFFFF" aria-pressed="false"><i style="--c:#FFFFFF"></i>Priest</button>
+    <button type="button" class="chip" data-class="Rogue" data-color="#FFF468" aria-pressed="false"><i style="--c:#FFF468"></i>Rogue</button>
+    <button type="button" class="chip" data-class="Shaman" data-color="#0070DD" aria-pressed="false"><i style="--c:#0070DD"></i>Shaman</button>
+    <button type="button" class="chip" data-class="Warlock" data-color="#8788EE" aria-pressed="false"><i style="--c:#8788EE"></i>Warlock</button>
+    <button type="button" class="chip" data-class="Warrior" data-color="#C69B6D" aria-pressed="false"><i style="--c:#C69B6D"></i>Warrior</button>
+  </div>
+  <div class="notes">
+    <div class="note"><h3>What changes</h3>
+      <p>Textures, gradients and icons go. What's left is 1px lines, tabular numbers and one thin bar per objective, so progress reads without parsing text. The accent follows your class; try it above.</p>
+      <p><strong>Trade-off.</strong> The least GoatQuest of the ten. It blends into your UI rather than announcing itself.</p></div>
+    <div class="note"><h3>Palette</h3><ul class="sw">
+      <li><i style="--c:#15171B"></i><span>Panel</span><span class="hex">#15171B</span></li>
+      <li><i style="--c:#2B2F36"></i><span>Hairline</span><span class="hex">#2B2F36</span></li>
+      <li><i style="--c:#ECEAE6"></i><span>Text</span><span class="hex">#ECEAE6</span></li>
+      <li><i style="--c:#8D939C"></i><span>Muted</span><span class="hex">#8D939C</span></li>
+      <li><i id="c1-sw" style="--c:#F48CBA"></i><span id="c1-sw-name">Your class: Paladin</span><span class="hex" id="c1-sw-hex">#F48CBA</span></li>
+    </ul></div>
+    <div class="note"><h3>Type</h3><p class="spec" style="font-family:'Archivo'">Defias Trapper <span style="font-stretch:80%;font-weight:600">9/15</span></p><p>Archivo, using its width axis: normal width for names, narrowed for numbers so counts stay compact.</p></div>
+    <div class="note"><h3>Building it in WoW</h3><p>Flat WHITE8X8 textures with PixelUtil for true 1px borders; the accent comes from C_ClassColor. The cheapest to build and the easiest to keep sharp at any UI scale.</p><p><strong>Effort:</strong> low.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================== 2 -->
+<section class="concept" id="c2" aria-labelledby="c2-name">
+<div class="wrap">
+  <header class="c-head">
+    <span class="c-num">2</span>
+    <div><h2 id="c2-name">Wanderweg</h2><p class="c-pitch">Goats were finding mountain paths long before we were. Directions become yellow alpine trail signs, and the guide becomes a climb.</p></div>
+    <button class="shortlist" type="button" aria-pressed="false" data-id="2" data-name="Wanderweg"><svg aria-hidden="true"><use href="#i-star"/></svg><span>Shortlist</span></button>
+  </header>
+  <div class="stage-scroll"><div class="stage" role="group" aria-label="Wanderweg on the game screen">
+    <div class="screen c2">
+      <div class="arrow-slot"><div class="ww-arrow" data-emblem>
+        <div class="ww-diamond"><svg viewBox="0 0 40 40" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+        <div class="ww-arrow-label">84 yd</div>
+      </div></div>
+      <div class="ww">
+        <div class="ww-pole"></div>
+        <div class="ww-plate-wrap"><div class="ww-plate">
+          <div class="ww-dest main"><span>Defias Trappers</span><span class="t">84 yd</span></div>
+          <div class="ww-dest"><span>Sentinel Hill</span><span class="t">250 yd</span></div>
+          <div class="ww-dest"><span>Furlbrow's Wardrobe</span><span class="t">850 yd</span></div>
+          <div class="ww-plate-foot">Westfall 48.4, 45.4</div>
+        </div></div>
+        <div class="ww-board">
+          <div class="ww-grade"><i></i><span>Mountain grade: they come in pairs</span></div>
+          <div class="ww-quest">The People's Militia</div>
+          <ul class="ww-objs">
+            <li data-obj="trap"><span class="mk"></span><span class="n">Defias Trapper</span><span class="v"><span data-bind="trap">9</span>/15</span></li>
+            <li><span class="mk"></span><span class="n">Defias Smuggler</span><span class="v">11/15</span></li>
+            <li class="also"><span class="mk"></span><span class="n">Red Leather Bandana</span><span class="v">6/15</span></li>
+          </ul>
+          <div class="ww-climb">
+            <svg viewBox="0 -12 276 76" aria-hidden="true">
+              <defs><clipPath id="ww-walked"><rect x="0" y="-12" width="52" height="76"/></clipPath></defs>
+              <path d="M0 58 L22 52 L40 55 L64 44 L86 47 L110 36 L132 39 L156 28 L176 32 L200 20 L222 24 L246 12 L254 15 L268 8 L276 11 V64 H0Z" fill="#ECEAE2"/>
+              <path d="M0 58 L22 52 L40 55 L64 44 L86 47 L110 36 L132 39 L156 28 L176 32 L200 20 L222 24 L246 12 L254 15 L268 8 L276 11 V64 H0Z" fill="#F5C400" clip-path="url(#ww-walked)"/>
+              <path d="M0 58 L22 52 L40 55 L64 44 L86 47 L110 36 L132 39 L156 28 L176 32 L200 20 L222 24 L246 12 L254 15 L268 8 L276 11" fill="none" stroke="#1F1E1B" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M138 64 V2" stroke="#9A988F" stroke-dasharray="2 3"/>
+              <text x="142" y="8" font-size="10" fill="#6A6860" font-family="Signika">14</text>
+              <path d="M268 8 V-9 L258 -6 L268 -3" fill="#D52B1E" stroke="#1F1E1B" stroke-width="1.2" stroke-linejoin="round"/>
+              <circle cx="52" cy="49.5" r="3.5" fill="#1F1E1B"/>
+              <use href="#goat" x="43" y="26" width="18" height="18" fill="#1F1E1B"/>
+            </svg>
+            <div class="ww-climb-cap"><span>Level 13</span><span>Step 12 of 64</span><span>Level 15</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="fs-btn" type="button">Full screen</button>
+  </div></div>
+  <div class="notes">
+    <div class="note"><h3>What changes</h3>
+      <p>The top plate lists where you're going now, where you'll hand in and what comes next, the way trail signs stack destinations. The stripe on the board grades the step: plain yellow for easy ground, red and white when mobs come in groups. The climb at the bottom is your progress through the guide.</p>
+      <p><strong>Trade-off.</strong> Sign yellow is loud. It needs a dimmer setting for night play.</p></div>
+    <div class="note"><h3>Palette</h3><ul class="sw">
+      <li><i style="--c:#F5C400"></i><span>Sign yellow</span><span class="hex">#F5C400</span></li>
+      <li><i style="--c:#1F1E1B"></i><span>Sign ink</span><span class="hex">#1F1E1B</span></li>
+      <li><i style="--c:#FAFAF6"></i><span>Board</span><span class="hex">#FAFAF6</span></li>
+      <li><i style="--c:#D52B1E"></i><span>Trail red</span><span class="hex">#D52B1E</span></li>
+      <li><i style="--c:#8E9396"></i><span>Pole steel</span><span class="hex">#8E9396</span></li>
+    </ul></div>
+    <div class="note"><h3>Type</h3><p class="spec" style="font-family:'Signika';font-weight:600">Defias Trapper 9/15</p><p>Signika, an open typeface drawn for wayfinding signs. Bold for destinations, regular for the board.</p></div>
+    <div class="note"><h3>Building it in WoW</h3><p>Each plate is a stretchable body plus a pointed end cap, so long names fit. The climb is drawn with the Line API from the guide's step count.</p><p><strong>Effort:</strong> moderate.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================== 3 -->
+<section class="concept" id="c3" aria-labelledby="c3-name">
+<div class="wrap">
+  <header class="c-head">
+    <span class="c-num">3</span>
+    <div><h2 id="c3-name">Transit</h2><p class="c-pitch">A guide is one route with errands running alongside it. Draw it as a transit map: each quest is a coloured line, and it ends where you hand it in.</p></div>
+    <button class="shortlist" type="button" aria-pressed="false" data-id="3" data-name="Transit"><svg aria-hidden="true"><use href="#i-star"/></svg><span>Shortlist</span></button>
+  </header>
+  <div class="stage-scroll"><div class="stage" role="group" aria-label="Transit on the game screen">
+    <div class="screen c3">
+      <div class="arrow-slot"><div class="tr-arrow" data-emblem>
+        <div class="tr-disc"><svg viewBox="0 0 40 40" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+        <div class="tr-pill"><b>84 yd</b> to Defias fields</div>
+      </div></div>
+      <div class="tr">
+        <div class="tr-head"><div class="tr-title">Westfall</div><div class="tr-meta">Levels 13–15<br>Step 12 of 64</div></div>
+        <svg class="tr-map" viewBox="0 0 320 312" aria-hidden="true">
+          <path d="M32 8 V84" stroke="#F0B000" stroke-width="8" opacity=".4"/>
+          <path d="M32 84 V312" stroke="#F0B000" stroke-width="8"/>
+          <path d="M46 84 V284" stroke="#DC241F" stroke-width="6"/>
+          <path d="M58 84 V284" stroke="#1C7FC4" stroke-width="6"/>
+          <path d="M70 84 V240" stroke="#00843D" stroke-width="6"/>
+          <circle cx="32" cy="24" r="6.5" fill="#F6F7F5" stroke="#F0B000" stroke-width="3" opacity=".7"/>
+          <text x="94" y="22" class="t-st t-dim">Scout Galiaan</text>
+          <text x="94" y="37" class="t-sub t-dim">Accepted Red Leather Bandanas</text>
+          <rect x="20" y="72" width="62" height="24" rx="12" fill="#fff" stroke="#1B1F24" stroke-width="3"/>
+          <text x="94" y="82" class="t-now">Defias fields</text>
+          <text x="94" y="99" class="t-sub">Kill Trappers and Smugglers</text>
+          <rect x="94" y="113" width="10" height="4" fill="#DC241F"/><text x="110" y="119">Defias Trapper</text><text x="304" y="119" text-anchor="end" class="t-v" data-obj="trap"><tspan data-bind="trap">9</tspan>/15</text>
+          <rect x="94" y="129" width="10" height="4" fill="#DC241F"/><text x="110" y="135">Defias Smuggler</text><text x="304" y="135" text-anchor="end" class="t-v">11/15</text>
+          <rect x="94" y="145" width="10" height="4" fill="#1C7FC4"/><text x="110" y="151">Red Leather Bandana</text><text x="304" y="151" text-anchor="end" class="t-v">6/15</text>
+          <rect x="94" y="161" width="10" height="4" fill="#00843D"/><text x="110" y="167">Goretusk Liver</text><text x="304" y="167" text-anchor="end" class="t-v">5/8</text>
+          <path d="M16 198 H30" stroke="#F0B000" stroke-width="5"/>
+          <text x="94" y="197" class="t-st">Furlbrow's Wardrobe</text>
+          <text x="94" y="212" class="t-sub">Loot the pocket watch</text>
+          <rect x="20" y="228" width="62" height="24" rx="12" fill="#fff" stroke="#1B1F24" stroke-width="3"/>
+          <text x="94" y="238" class="t-st">Saldean's Farm</text>
+          <text x="94" y="253" class="t-sub">Hand in Goretusk Liver Pie</text>
+          <rect x="20" y="272" width="50" height="24" rx="12" fill="#fff" stroke="#1B1F24" stroke-width="3"/>
+          <text x="94" y="282" class="t-st">Sentinel Hill</text>
+          <text x="94" y="297" class="t-sub">Hand in Militia and Bandanas</text>
+        </svg>
+        <div class="tr-key">Each colour is a quest. A line ends where you hand it in.</div>
+      </div>
+    </div>
+    <button class="fs-btn" type="button">Full screen</button>
+  </div></div>
+  <div class="notes">
+    <div class="note"><h3>What changes</h3>
+      <p>Side objectives stop being a separate list. They ride alongside the route as coloured lines until the station where you hand them in, so you can see what's still open and where it ends. The light panel reads the same over snow, swamp or a dungeon floor.</p>
+      <p><strong>Trade-off.</strong> A light panel is the brightest thing on a night screen. It needs an opacity setting, and long guides need the map to scroll.</p></div>
+    <div class="note"><h3>Palette</h3><ul class="sw">
+      <li><i style="--c:#F6F7F5"></i><span>Map white</span><span class="hex">#F6F7F5</span></li>
+      <li><i style="--c:#1B1F24"></i><span>Ink</span><span class="hex">#1B1F24</span></li>
+      <li><i style="--c:#F0B000"></i><span>Route gold</span><span class="hex">#F0B000</span></li>
+      <li><i style="--c:#DC241F"></i><span>Militia red</span><span class="hex">#DC241F</span></li>
+      <li><i style="--c:#1C7FC4"></i><span>Bandana blue</span><span class="hex">#1C7FC4</span></li>
+      <li><i style="--c:#00843D"></i><span>Farm green</span><span class="hex">#00843D</span></li>
+    </ul></div>
+    <div class="note"><h3>Type</h3><p class="spec" style="font-family:'Schibsted Grotesk';font-weight:800">Defias fields <small style="font-weight:400">Defias Trapper 9/15</small></p><p>Schibsted Grotesk. Heavy weight for station names, regular for the rest, like a printed line map.</p></div>
+    <div class="note"><h3>Building it in WoW</h3><p>Guides already mark parallel objectives with <em>stickystart</em> and <em>stickystop</em>, so the lines come from existing data. Lines, ticks and stations are plain textures.</p><p><strong>Effort:</strong> moderate to high. The layout logic is the work.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================== 4 -->
+<section class="concept" id="c4" aria-labelledby="c4-name">
+<div class="wrap">
+  <header class="c-head">
+    <span class="c-num">4</span>
+    <div><h2 id="c4-name">The Deck</h2><p class="c-pitch">One step, one card. The current step lies face up and the next ones wait behind it, each marked with its suit.</p></div>
+    <button class="shortlist" type="button" aria-pressed="false" data-id="4" data-name="The Deck"><svg aria-hidden="true"><use href="#i-star"/></svg><span>Shortlist</span></button>
+  </header>
+  <div class="stage-scroll"><div class="stage" role="group" aria-label="The Deck on the game screen">
+    <div class="screen c4">
+      <div class="arrow-slot"><div class="dk-compass" data-emblem>
+        <div class="dk-dial"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M22 3 L25.5 19 L36 22 L25.5 25 L22 35 L18.5 25 L8 22 L18.5 19Z" fill="#EFE8DA"/><path d="M22 3 L25.5 19 L22 22 L18.5 19Z" fill="#D9A93E"/></svg></div>
+        <div class="dk-dist">84 yd</div>
+      </div></div>
+      <div class="dk" data-deck>
+        <article class="card pos-0" data-suit="kill" data-step="12">
+          <div class="idx tl"><span class="rank">12</span><svg aria-hidden="true"><use href="#s-kill"/></svg></div>
+          <div class="idx br"><span class="rank">12</span><svg aria-hidden="true"><use href="#s-kill"/></svg></div>
+          <div class="card-body">
+            <div class="emblem"><svg aria-hidden="true"><use href="#s-kill"/></svg></div>
+            <h4>Defias Trappers and Smugglers</h4>
+            <p class="q">The People's Militia</p>
+            <div class="prow" data-obj="trap"><div class="prow-top"><span>Trapper</span><b><span data-bind="trap">9</span>/15</b></div><div class="pips" data-pips="trap" data-total="15"></div></div>
+            <div class="prow"><div class="prow-top"><span>Smuggler</span><b>11/15</b></div><div class="pips" data-pips-static="11" data-total="15"></div></div>
+            <div class="orn"></div>
+            <p class="tip">Red Leather Bandanas drop from both: 6 of 15.</p>
+            <p class="where">48.4, 45.4, 84 yd away</p>
+          </div>
+        </article>
+        <article class="card pos-1" data-suit="collect" data-step="13">
+          <div class="idx tl"><span class="rank">13</span><svg aria-hidden="true"><use href="#s-collect"/></svg></div>
+          <div class="idx br"><span class="rank">13</span><svg aria-hidden="true"><use href="#s-collect"/></svg></div>
+          <div class="card-body">
+            <div class="emblem"><svg aria-hidden="true"><use href="#s-collect"/></svg></div>
+            <h4>Furlbrow's Pocket Watch</h4>
+            <p class="q">The Forgotten Heirloom</p>
+            <p class="tip">Stand outside the house and zoom your camera out. Loot the wardrobe through the wall.</p>
+            <div class="orn"></div>
+            <p class="where">Furlbrow's Wardrobe, 49.3, 19.4</p>
+          </div>
+        </article>
+        <article class="card pos-2" data-suit="kill" data-step="14">
+          <div class="idx tl"><span class="rank">14</span><svg aria-hidden="true"><use href="#s-kill"/></svg></div>
+          <div class="idx br"><span class="rank">14</span><svg aria-hidden="true"><use href="#s-kill"/></svg></div>
+          <div class="card-body">
+            <div class="emblem"><svg aria-hidden="true"><use href="#s-kill"/></svg></div>
+            <h4>Riverpaw Gnolls</h4>
+            <p class="q">Patrolling Westfall</p>
+            <div class="prow"><div class="prow-top"><span>Gnoll Paw</span><b>0/8</b></div><div class="pips" data-pips-static="0" data-total="8"></div></div>
+            <div class="orn"></div>
+            <p class="where">North fields, 56.2, 13.2</p>
+          </div>
+        </article>
+        <article class="card pos-3" data-suit="travel" data-step="15">
+          <div class="idx tl"><span class="rank">15</span><svg aria-hidden="true"><use href="#s-travel"/></svg></div>
+          <div class="idx br"><span class="rank">15</span><svg aria-hidden="true"><use href="#s-travel"/></svg></div>
+          <div class="card-body">
+            <div class="emblem"><svg aria-hidden="true"><use href="#s-travel"/></svg></div>
+            <h4>Back to Sentinel Hill</h4>
+            <p class="q">Three quests to hand in</p>
+            <p class="tip">The flight master is on the hill if you need Stormwind after.</p>
+            <div class="orn"></div>
+            <p class="where">Sentinel Hill, 56.3, 47.5</p>
+          </div>
+        </article>
+      </div>
+    </div>
+    <button class="fs-btn" type="button">Full screen</button>
+  </div></div>
+  <div class="try">
+    <span class="try-label">Deck</span>
+    <button type="button" class="chip" id="play-card">Play card</button>
+    <span class="try-status" id="deck-status" aria-live="polite">Step 12 face up</span>
+  </div>
+  <div class="notes">
+    <div class="note"><h3>What changes</h3>
+      <p>The step number becomes the card's rank and each kind of step has a suit: kill, collect, talk or travel. Kill counts are pips, like the pips on a playing card. The corner of the next card tells you what's coming. Press Play card to bring it forward.</p>
+      <p><strong>Trade-off.</strong> One step in detail at a time. Players who like to read ahead see less.</p></div>
+    <div class="note"><h3>Palette</h3><ul class="sw">
+      <li><i style="--c:#1B2A41"></i><span>Lacquer</span><span class="hex">#1B2A41</span></li>
+      <li><i style="--c:#D9A93E"></i><span>Foil, collect</span><span class="hex">#D9A93E</span></li>
+      <li><i style="--c:#EFE8DA"></i><span>Bone</span><span class="hex">#EFE8DA</span></li>
+      <li><i style="--c:#D0473D"></i><span>Kill</span><span class="hex">#D0473D</span></li>
+      <li><i style="--c:#45B0AD"></i><span>Travel</span><span class="hex">#45B0AD</span></li>
+      <li><i style="--c:#9C82D6"></i><span>Talk</span><span class="hex">#9C82D6</span></li>
+    </ul></div>
+    <div class="note"><h3>Type</h3><p class="spec" style="font-family:'Marcellus'">Riverpaw Gnolls <small style="font-family:'Alegreya Sans';font-style:italic">Patrolling Westfall</small></p><p>Marcellus for ranks and titles; its flared capitals sit close to the game's own lettering. Alegreya Sans for card text.</p></div>
+    <div class="note"><h3>Building it in WoW</h3><p>Cards stack by offset, not rotation, because WoW can't rotate text. Frame, back and four suit glyphs are six small textures.</p><p><strong>Effort:</strong> moderate.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================== 5 -->
+<section class="concept" id="c5" aria-labelledby="c5-name">
+<div class="wrap">
+  <header class="c-head">
+    <span class="c-num">5</span>
+    <div><h2 id="c5-name">G.O.A.T. Mk II</h2><p class="c-pitch">The Gnomish Orienteering and Adventure Tracker: a brass readout bolted to your screen, with a radar for the waypoint and tally drums that roll with every kill.</p></div>
+    <button class="shortlist" type="button" aria-pressed="false" data-id="5" data-name="G.O.A.T. Mk II"><svg aria-hidden="true"><use href="#i-star"/></svg><span>Shortlist</span></button>
+  </header>
+  <div class="stage-scroll"><div class="stage" role="group" aria-label="G.O.A.T. Mk II on the game screen">
+    <div class="screen c5">
+      <div class="arrow-slot"><div class="gt-scope" data-emblem>
+        <div class="gt-bezel"><div class="gt-glass">
+          <div class="gt-sweep"></div>
+          <span class="gt-blip main" style="left:30%;top:30%"></span>
+          <span class="gt-blip" style="left:28%;top:74%"></span>
+          <span class="gt-blip" style="left:92%;top:48%"></span>
+          <span class="gt-you"></span>
+        </div></div>
+        <div class="gt-readout">84 yd</div>
+      </div></div>
+      <div class="gt">
+        <div class="gt-plate"><b>G.O.A.T. Mk II</b><small>Gnomish Orienteering and Adventure Tracker</small></div>
+        <div class="gt-crt">
+          <div class="gt-l dim"><span>Westfall 13-15</span><span class="lead"></span><span>Step 012/064</span></div>
+          <div class="gt-l hd"><span>&gt; The People's Militia</span></div>
+          <div class="gt-l ind" data-obj="trap"><span>Defias Trapper</span><span class="lead"></span><span class="val"><span data-bind="trap">9</span>/15</span></div>
+          <div class="gt-l ind"><span>Defias Smuggler</span><span class="lead"></span><span class="val">11/15</span></div>
+          <div class="gt-l hd"><span>&gt; Red Leather Bandanas</span></div>
+          <div class="gt-l ind"><span>Bandana</span><span class="lead"></span><span class="val">6/15</span></div>
+          <div class="gt-l hd dim"><span>&gt; Next: Furlbrow's Wardrobe</span></div>
+        </div>
+        <div class="gt-tallies">
+          <div class="tally" data-tally="trap"><div class="drums"></div><label>Trapper</label></div>
+          <div class="tally" data-tally-static="11"><div class="drums"></div><label>Smuggler</label></div>
+          <div class="tally" data-tally-static="6"><div class="drums"></div><label>Bandana</label></div>
+        </div>
+      </div>
+    </div>
+    <button class="fs-btn" type="button">Full screen</button>
+  </div></div>
+  <div class="notes">
+    <div class="note"><h3>What changes</h3>
+      <p>Counts move onto mechanical tally drums that roll over with each kill; press Kill a Defias Trapper at the top to hear them in your head. The radar shows the target and the next two stops together, so you always know what's after this.</p>
+      <p><strong>Trade-off.</strong> The most art and the most novelty. Great as an optional skin, tiring as the default.</p></div>
+    <div class="note"><h3>Palette</h3><ul class="sw">
+      <li><i style="--c:#B08D57"></i><span>Brass</span><span class="hex">#B08D57</span></li>
+      <li><i style="--c:#3B4145"></i><span>Steel</span><span class="hex">#3B4145</span></li>
+      <li><i style="--c:#1A1206"></i><span>Tube glass</span><span class="hex">#1A1206</span></li>
+      <li><i style="--c:#FFB43A"></i><span>Phosphor</span><span class="hex">#FFB43A</span></li>
+      <li><i style="--c:#F1EFE9"></i><span>Drum white</span><span class="hex">#F1EFE9</span></li>
+    </ul></div>
+    <div class="note"><h3>Type</h3><p class="spec" style="font-family:'VT323';font-size:30px!important">Defias Trapper 9/15 <small style="font-family:'Saira Stencil One'">Trapper 09</small></p><p>VT323 for the tube screen, Saira Stencil One for stamped brass and the tally drums.</p></div>
+    <div class="note"><h3>Building it in WoW</h3><p>The sweep is a rotating texture, and each drum is a digit strip scrolled inside a clipped frame. Could ship as an optional skin for engineers.</p><p><strong>Effort:</strong> high, mostly art.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================== 6 -->
+<section class="concept" id="c6" aria-labelledby="c6-name">
+<div class="wrap">
+  <header class="c-head">
+    <span class="c-num">6</span>
+    <div><h2 id="c6-name">Guiding Wind</h2><p class="c-pitch">No panel at all. The objective sits under your character like a film subtitle, and a warm glow at the screen edge shows the way.</p></div>
+    <button class="shortlist" type="button" aria-pressed="false" data-id="6" data-name="Guiding Wind"><svg aria-hidden="true"><use href="#i-star"/></svg><span>Shortlist</span></button>
+  </header>
+  <div class="stage-scroll"><div class="stage" role="group" aria-label="Guiding Wind on the game screen">
+    <div class="screen c6">
+      <div class="gw-edge"></div>
+      <svg class="gw-streaks" viewBox="0 0 380 320" aria-hidden="true">
+        <defs><linearGradient id="g-wind" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFF4D8" stop-opacity="0"/><stop offset=".55" stop-color="#FFF4D8" stop-opacity=".95"/><stop offset="1" stop-color="#FFF4D8" stop-opacity="0"/></linearGradient></defs>
+        <path d="M360 300 C270 240 190 190 70 120"/>
+        <path d="M320 262 C250 214 170 160 110 76"/>
+        <path d="M380 240 C300 200 230 160 150 126"/>
+      </svg>
+      <div class="gw-mark" data-emblem><svg viewBox="0 0 30 30" aria-hidden="true"><path d="M15 26 V5 M7.5 12.5 L15 5 L22.5 12.5"/></svg><span>84 yd</span></div>
+      <div class="gw-sub">
+        <p class="gw-quest">The People's Militia</p>
+        <p class="gw-line">Kill Defias Trappers and Smugglers</p>
+        <div class="gw-meta">
+          <div class="gw-count" data-obj="trap"><span class="pips" data-pips="trap" data-total="15"></span><span>Trappers <b data-bind="trap">9</b></span></div>
+          <div class="gw-count"><span class="pips" data-pips-static="11" data-total="15"></span><span>Smugglers <b>11</b></span></div>
+          <button type="button" class="gw-key" data-drawer aria-pressed="false"><kbd>Alt</kbd> all steps</button>
+        </div>
+      </div>
+      <aside class="gw-drawer" aria-label="Full step list">
+        <h4>Westfall</h4>
+        <p class="gw-d-sub">Levels 13 to 15</p>
+        <ol class="gw-steps">
+          <li class="done"><span>10</span><span>Get the Sentinel Hill flight path</span></li>
+          <li class="done"><span>11</span><span>Accept Red Leather Bandanas</span></li>
+          <li class="cur"><span>12</span><span>Kill Defias Trappers and Smugglers<em>West of Sentinel Hill. Bandanas drop from both.</em></span></li>
+          <li><span>13</span><span>Loot Furlbrow's Pocket Watch</span></li>
+          <li><span>14</span><span>Collect 8 Gnoll Paws</span></li>
+          <li><span>15</span><span>Collect 3 Murloc Eyes</span></li>
+          <li><span>16</span><span>Hand in at Saldean's Farm</span></li>
+        </ol>
+        <p class="gw-along">Along the way: Red Leather Bandana 6 of 15, Goretusk Liver 5 of 8.</p>
+      </aside>
+    </div>
+    <button class="fs-btn" type="button">Full screen</button>
+  </div></div>
+  <div class="try">
+    <span class="try-label">In game you hold Alt</span>
+    <button type="button" class="chip" data-drawer aria-pressed="false">Show all steps</button>
+  </div>
+  <div class="notes">
+    <div class="note"><h3>What changes</h3>
+      <p>Only the current objective is on screen. The direction is a warm glow at the screen edge with the distance beside it. The full list slides in from the left while you hold Alt.</p>
+      <p><strong>Trade-off.</strong> It hides everything but now. New players may want the list pinned open, so that should be a setting.</p></div>
+    <div class="note"><h3>Palette</h3><ul class="sw">
+      <li><i style="--c:#FFFFFF"></i><span>Subtitle</span><span class="hex">#FFFFFF</span></li>
+      <li><i style="--c:#E6DECB"></i><span>Caption</span><span class="hex">#E6DECB</span></li>
+      <li><i style="--c:#F1D08A"></i><span>Wind</span><span class="hex">#F1D08A</span></li>
+      <li><i style="--c:#000000"></i><span>Shadow, 70%</span><span class="hex">#000000</span></li>
+    </ul></div>
+    <div class="note"><h3>Type</h3><p class="spec" style="font-family:'Spectral'"><i>The People's Militia</i> <small>Kill Defias Trappers</small></p><p>Spectral, a serif made for screens. Italic for the quest, regular for the objective, as in film subtitles.</p></div>
+    <div class="note"><h3>Building it in WoW</h3><p>Addons can't draw in the 3D world, so direction lives on the screen edge, placed from the angle between your facing and the waypoint. Text needs a heavy shadow to survive bright ground like this.</p><p><strong>Effort:</strong> low to moderate.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================== 7 -->
+<section class="concept" id="c7" aria-labelledby="c7-name">
+<div class="wrap">
+  <header class="c-head">
+    <span class="c-num">7</span>
+    <div><h2 id="c7-name">Halo</h2><p class="c-pitch">Put the arrow where your eyes already are. A ring at your character's feet points the way, and meters beside you fill as you go.</p></div>
+    <button class="shortlist" type="button" aria-pressed="false" data-id="7" data-name="Halo"><svg aria-hidden="true"><use href="#i-star"/></svg><span>Shortlist</span></button>
+  </header>
+  <div class="stage-scroll"><div class="stage" role="group" aria-label="Halo on the game screen">
+    <div class="screen c7">
+      <div class="hl-top">
+        <div class="hl-top-line"><b>Westfall 13–15</b><span>Step 12 of 64</span></div>
+        <div class="hl-steps"><i></i></div>
+        <div class="hl-then">Then: Furlbrow's Wardrobe</div>
+      </div>
+      <svg class="hl-ring" viewBox="0 0 300 130" data-emblem aria-hidden="true">
+        <ellipse class="ring-shadow" cx="150" cy="80" rx="128" ry="36"/>
+        <ellipse class="ring" cx="150" cy="80" rx="128" ry="36"/>
+        <path class="under" d="M34 64.8 A128 36 0 0 1 76.6 50.5"/>
+        <path class="under" d="M-9 5 L0 -5 L9 5" transform="translate(48.2 45.6) rotate(-18.5)"/>
+        <path class="under" d="M-9 5 L0 -5 L9 5" transform="translate(44.4 33.2) rotate(-18.5)"/>
+        <path class="arc" d="M34 64.8 A128 36 0 0 1 76.6 50.5"/>
+        <path class="chev" d="M-9 5 L0 -5 L9 5" transform="translate(48.2 45.6) rotate(-18.5)"/>
+        <path class="chev" d="M-9 5 L0 -5 L9 5" transform="translate(44.4 33.2) rotate(-18.5)" opacity=".75"/>
+        <text x="40" y="17" text-anchor="middle">84 yd</text>
+      </svg>
+      <ul class="hl-meters">
+        <li data-obj="trap"><svg class="hl-arc" viewBox="0 0 36 36" style="--v:var(--trap)" aria-hidden="true"><circle class="bg" cx="18" cy="18" r="15"/><circle class="trk" cx="18" cy="18" r="15"/><circle class="val" cx="18" cy="18" r="15" pathLength="100"/></svg><div><b><span data-bind="trap">9</span>/15</b><small>Trappers</small></div></li>
+        <li><svg class="hl-arc" viewBox="0 0 36 36" style="--v:.7333" aria-hidden="true"><circle class="bg" cx="18" cy="18" r="15"/><circle class="trk" cx="18" cy="18" r="15"/><circle class="val" cx="18" cy="18" r="15" pathLength="100"/></svg><div><b>11/15</b><small>Smugglers</small></div></li>
+        <li class="minor"><svg class="hl-arc" viewBox="0 0 36 36" style="--v:.4" aria-hidden="true"><circle class="bg" cx="18" cy="18" r="15"/><circle class="trk" cx="18" cy="18" r="15"/><circle class="val" cx="18" cy="18" r="15" pathLength="100"/></svg><div><b>6/15</b><small>Bandanas</small></div></li>
+      </ul>
+    </div>
+    <button class="fs-btn" type="button">Full screen</button>
+  </div></div>
+  <div class="notes">
+    <div class="note"><h3>What changes</h3>
+      <p>In a fight you watch your character, not the corner of the screen. The ring at your feet points the way and the meters beside you fill as you go, with text cut down to numbers.</p>
+      <p><strong>Trade-off.</strong> It assumes the camera centres your character. Players who zoom far out or offset the camera will need to move it.</p></div>
+    <div class="note"><h3>Palette</h3><ul class="sw">
+      <li><i style="--c:#F7F5F0"></i><span>Ring</span><span class="hex">#F7F5F0</span></li>
+      <li><i style="--c:#FFC83D"></i><span>Meter gold</span><span class="hex">#FFC83D</span></li>
+      <li><i style="--c:rgba(255,255,255,.28)"></i><span>Track, 28%</span><span class="hex">#FFFFFF</span></li>
+      <li><i style="--c:#000000"></i><span>Shadow, 60%</span><span class="hex">#000000</span></li>
+    </ul></div>
+    <div class="note"><h3>Type</h3><p class="spec" style="font-family:'Atkinson Hyperlegible';font-weight:700">9/15 Trappers</p><p>Atkinson Hyperlegible, designed for readers with low vision. Its distinct letterforms hold up when you glance down mid-fight.</p></div>
+    <div class="note"><h3>Building it in WoW</h3><p>Meters are Cooldown swipes, which the game draws natively. The ring is a fixed overlay at screen centre with a user offset; the notch is a rotated texture.</p><p><strong>Effort:</strong> moderate.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================== 8 -->
+<section class="concept" id="c8" aria-labelledby="c8-name">
+<div class="wrap">
+  <header class="c-head">
+    <span class="c-num">8</span>
+    <div><h2 id="c8-name">Forgeworks</h2><p class="c-pitch">Carved into Ironforge slate. Objectives are channels cut in the stone that fill with molten gold.</p></div>
+    <button class="shortlist" type="button" aria-pressed="false" data-id="8" data-name="Forgeworks"><svg aria-hidden="true"><use href="#i-star"/></svg><span>Shortlist</span></button>
+  </header>
+  <div class="stage-scroll"><div class="stage" role="group" aria-label="Forgeworks on the game screen">
+    <div class="screen c8">
+      <div class="arrow-slot"><div class="fw-stone" data-emblem>
+        <div class="fw-stone-wrap"><div class="fw-stone-body"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 L32 21 L24 19 V36 H16 V19 L8 21Z" fill="url(#g-molten)"/></svg></div></div>
+        <div class="fw-stone-dist">84 yd</div>
+      </div></div>
+      <div class="fw"><div class="fw-slab">
+        <h4 class="fw-zone">Westfall</h4>
+        <div class="fw-meta"><span>Levels 13 to 15</span><span>Step 12 of 64</span></div>
+        <div class="fw-groove"></div>
+        <p class="fw-done"><svg aria-hidden="true"><use href="#i-check"/></svg>Accepted Red Leather Bandanas</p>
+        <p class="fw-quest">The People's Militia</p>
+        <div class="fw-obj" data-obj="trap"><div class="fw-row"><span>Defias Trapper</span><b><span data-bind="trap">9</span>/15</b></div><div class="fw-chan"><i class="p-trap"></i></div></div>
+        <div class="fw-obj"><div class="fw-row"><span>Defias Smuggler</span><b>11/15</b></div><div class="fw-chan"><i style="width:73.3%"></i></div></div>
+        <div class="fw-obj minor"><div class="fw-row"><span>Red Leather Bandana</span><b>6/15</b></div><div class="fw-chan"><i style="width:40%"></i></div></div>
+        <div class="fw-obj minor is-complete"><div class="fw-row"><span>Handful of Oats</span><b>8/8</b></div><div class="fw-chan"><i style="width:100%"></i></div></div>
+        <p class="fw-next">Then <b>loot Furlbrow's Pocket Watch</b></p>
+      </div></div>
+    </div>
+    <button class="fs-btn" type="button">Full screen</button>
+  </div></div>
+  <div class="notes">
+    <div class="note"><h3>What changes</h3>
+      <p>The progress bars are the feature. A lit channel is easy to catch from the corner of your eye, even in dark zones, and a finished objective cools into gold inlay. Kill a Defias Trapper to watch the channel fill.</p>
+      <p><strong>Trade-off.</strong> Blackletter is strong flavour. Keep it to the zone name.</p></div>
+    <div class="note"><h3>Palette</h3><ul class="sw">
+      <li><i style="--c:#353A3F"></i><span>Slate</span><span class="hex">#353A3F</span></li>
+      <li><i style="--c:#212529"></i><span>Deep slate</span><span class="hex">#212529</span></li>
+      <li><i style="--c:#A7AEB5"></i><span>Chisel</span><span class="hex">#A7AEB5</span></li>
+      <li><i style="--c:#FFB02E"></i><span>Molten</span><span class="hex">#FFB02E</span></li>
+      <li><i style="--c:#E2561A"></i><span>Ember</span><span class="hex">#E2561A</span></li>
+      <li><i style="--c:#E8B04B"></i><span>Inlay</span><span class="hex">#E8B04B</span></li>
+    </ul></div>
+    <div class="note"><h3>Type</h3><p class="spec" style="font-family:'Grenze Gotisch';font-weight:700">Westfall <small style="font-family:'Grenze';font-weight:500">Defias Trapper 9/15</small></p><p>Grenze Gotisch for the zone name only; Grenze, its calmer sibling, for everything else.</p></div>
+    <div class="note"><h3>Building it in WoW</h3><p>The slab and channels are 9-slice textures. The fill is a StatusBar with a looping glow texture on its leading edge.</p><p><strong>Effort:</strong> moderate.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================== 9 -->
+<section class="concept" id="c9" aria-labelledby="c9-name">
+<div class="wrap">
+  <header class="c-head">
+    <span class="c-num">9</span>
+    <div><h2 id="c9-name">Standard</h2><p class="c-pitch">Your faction's war banner hangs from the top of the screen, and the guide is embroidered down the cloth.</p></div>
+    <button class="shortlist" type="button" aria-pressed="false" data-id="9" data-name="Standard"><svg aria-hidden="true"><use href="#i-star"/></svg><span>Shortlist</span></button>
+  </header>
+  <div class="stage-scroll"><div class="stage" role="group" aria-label="Standard on the game screen">
+    <div class="screen c9" data-faction="alliance">
+      <div class="arrow-slot"><div class="sd-shield" data-emblem>
+        <svg viewBox="0 0 60 70" aria-hidden="true"><path class="sh" d="M4 4 H56 V34 C56 52 42 62 30 67 C18 62 4 52 4 34Z"/><g transform="rotate(-40 30 33)"><path class="ar" d="M30 10 L36 20 L31.5 19 V42 L35 47 V50 L30 46 L25 50 V47 L28.5 42 V19 L24 20Z"/></g></svg>
+        <div class="sd-dist">84 yd</div>
+      </div></div>
+      <div class="sd">
+        <div class="sd-rod"></div>
+        <div class="sd-cloth-wrap"><div class="sd-cloth">
+          <div class="sd-crest"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#goat"/></svg></div>
+          <h4 class="sd-zone">Westfall</h4>
+          <p class="sd-lv">Levels 13 to 15, step 12 of 64</p>
+          <ol class="sd-steps">
+            <li class="done"><svg aria-hidden="true"><use href="#i-check"/></svg><span>Accept Red Leather Bandanas</span></li>
+            <li class="cur">
+              <span class="sd-q">The People's Militia</span>
+              <span class="sd-o" data-obj="trap"><span>Defias Trapper</span><b><span data-bind="trap">9</span>/15</b></span>
+              <span class="stitches" data-pips="trap" data-total="15"></span>
+              <span class="sd-o"><span>Defias Smuggler</span><b>11/15</b></span>
+              <span class="stitches" data-pips-static="11" data-total="15"></span>
+              <span class="sd-o minor"><span>Red Leather Bandana</span><b>6/15</b></span>
+            </li>
+            <li class="next">Loot Furlbrow's Pocket Watch</li>
+            <li class="next">Collect 8 Gnoll Paws</li>
+          </ol>
+        </div></div>
+      </div>
+    </div>
+    <button class="fs-btn" type="button">Full screen</button>
+  </div></div>
+  <div class="try" role="group" aria-labelledby="c9-try">
+    <span class="try-label" id="c9-try">Faction</span>
+    <button type="button" class="chip" data-faction-btn="alliance" aria-pressed="true">Alliance</button>
+    <button type="button" class="chip" data-faction-btn="horde" aria-pressed="false">Horde</button>
+  </div>
+  <div class="notes">
+    <div class="note"><h3>What changes</h3>
+      <p>The guide is cloth hanging from the top of the screen. Finished steps are stitched off and the current one is outlined in gold thread. Colours follow your faction, and the crest is GoatQuest's own goat.</p>
+      <p><strong>Trade-off.</strong> Tall and narrow, so long step text wraps more than in the others.</p></div>
+    <div class="note"><h3>Palette</h3><ul class="sw">
+      <li><i style="--c:#1F3A7A"></i><span>Alliance blue</span><span class="hex">#1F3A7A</span></li>
+      <li><i style="--c:#D9B24C"></i><span>Alliance gold</span><span class="hex">#D9B24C</span></li>
+      <li><i style="--c:#7E1A17"></i><span>Horde red</span><span class="hex">#7E1A17</span></li>
+      <li><i style="--c:#2A2524"></i><span>Horde iron</span><span class="hex">#2A2524</span></li>
+      <li><i style="--c:#F3EBD8"></i><span>Thread</span><span class="hex">#F3EBD8</span></li>
+    </ul></div>
+    <div class="note"><h3>Type</h3><p class="spec" style="font-family:'IM Fell English SC'">Westfall <small style="font-family:'Vollkorn'">Defias Trapper 9/15</small></p><p>IM Fell English SC for the zone and distance, Vollkorn for steps. Vollkorn stays sturdy at small sizes on busy cloth.</p></div>
+    <div class="note"><h3>Building it in WoW</h3><p>The cloth is one tall texture with the swallowtail and fold shading baked in, tinted per faction with SetVertexColor. Stitches are a tiled dash texture.</p><p><strong>Effort:</strong> moderate.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================== 10 -->
+<section class="concept" id="c10" aria-labelledby="c10-name">
+<div class="wrap">
+  <header class="c-head">
+    <span class="c-num">10</span>
+    <div><h2 id="c10-name">Starchart</h2><p class="c-pitch">Read the route the way Sentinels read the sky. Every stop in the guide is a star, placed from its real map coordinates.</p></div>
+    <button class="shortlist" type="button" aria-pressed="false" data-id="10" data-name="Starchart"><svg aria-hidden="true"><use href="#i-star"/></svg><span>Shortlist</span></button>
+  </header>
+  <div class="stage-scroll"><div class="stage" role="group" aria-label="Starchart on the game screen">
+    <div class="screen c10">
+      <div class="arrow-slot"><div class="st-arrow" data-emblem>
+        <div class="st-disc"><svg viewBox="0 0 80 80" aria-hidden="true"><g transform="rotate(-40 40 40)"><path d="M40 6 L45 34 L56 40 L45 45 L40 60 L35 45 L24 40 L35 34Z" fill="url(#g-star)"/></g></svg></div>
+        <div class="st-dist">84 yd</div>
+      </div></div>
+      <div class="st">
+        <div class="st-chart">
+          <svg viewBox="0 0 250 250" aria-hidden="true">
+            <circle class="st-rim" cx="125" cy="125" r="118"/>
+            <circle class="st-orbit" cx="125" cy="125" r="80"/>
+            <circle class="st-orbit" cx="125" cy="125" r="40"/>
+            <g class="st-bg"></g>
+            <path class="st-done-line" d="M152 70 L136 120 L137 188 L138 210 L127 211 L104 179"/>
+            <path class="st-next-line" d="M104 179 L107 70 L136 44 L125 38 L136 120"/>
+            <circle class="st-star" cx="152" cy="70" r="2.6" filter="url(#f-glow)"/>
+            <circle class="st-star" cx="136" cy="120" r="3" filter="url(#f-glow)"/>
+            <circle class="st-star" cx="137" cy="188" r="3.4" filter="url(#f-glow)"/>
+            <circle class="st-star" cx="138" cy="210" r="2.2" filter="url(#f-glow)"/>
+            <circle class="st-star" cx="127" cy="211" r="2.4" filter="url(#f-glow)"/>
+            <circle class="st-future" cx="107" cy="70" r="2.8"/>
+            <circle class="st-future" cx="136" cy="44" r="2.8"/>
+            <circle class="st-future" cx="125" cy="38" r="2.8"/>
+            <circle class="st-now-ring" cx="104" cy="179" r="7"/>
+            <circle class="st-now" cx="104" cy="179" r="3.8" filter="url(#f-glow)"/>
+            <path class="st-you" d="M112 166 L116 176 L112 173.5 L108 176Z" transform="rotate(-90 112 172)"/>
+            <text class="st-label" x="159" y="73">Furlbrows</text>
+            <text class="st-label" x="144" y="123">Saldean's Farm</text>
+            <text class="st-label" x="146" y="191">Sentinel Hill</text>
+            <text class="st-label now" x="96" y="183" text-anchor="end">Defias fields</text>
+            <text class="st-label" x="99" y="73" text-anchor="end">Wardrobe</text>
+            <text class="st-label" x="144" y="46">Riverpaw camp</text>
+            <text class="st-label" x="117" y="34" text-anchor="end">Coast</text>
+          </svg>
+        </div>
+        <div class="st-text">
+          <p class="st-q">The People's Militia <span>Step 12 of 64</span></p>
+          <div class="st-obj" data-obj="trap"><span>Defias Trapper</span><b><span data-bind="trap">9</span>/15</b><span class="st-bar"><i class="p-trap"></i></span></div>
+          <div class="st-obj"><span>Defias Smuggler</span><b>11/15</b><span class="st-bar"><i style="width:73.3%"></i></span></div>
+          <div class="st-obj minor"><span>Red Leather Bandana</span><b>6/15</b><span class="st-bar"><i style="width:40%"></i></span></div>
+          <p class="st-then">Then Furlbrow's Wardrobe, far to the north</p>
+        </div>
+      </div>
+    </div>
+    <button class="fs-btn" type="button">Full screen</button>
+  </div></div>
+  <div class="notes">
+    <div class="note"><h3>What changes</h3>
+      <p>The whole route is visible at once. Where you've been burns bright and the dotted line is what's left. It's the one direction here in cool colours, so it stands apart from the game's gold UI.</p>
+      <p><strong>Trade-off.</strong> The chart shows where, not what. It always needs the text beneath it.</p></div>
+    <div class="note"><h3>Palette</h3><ul class="sw">
+      <li><i style="--c:#10163A"></i><span>Night</span><span class="hex">#10163A</span></li>
+      <li><i style="--c:#E6ECFF"></i><span>Starlight</span><span class="hex">#E6ECFF</span></li>
+      <li><i style="--c:#A9B4D6"></i><span>Silver</span><span class="hex">#A9B4D6</span></li>
+      <li><i style="--c:#9C8CFF"></i><span>Violet</span><span class="hex">#9C8CFF</span></li>
+      <li><i style="--c:#6FE3D6"></i><span>Moonwell</span><span class="hex">#6FE3D6</span></li>
+    </ul></div>
+    <div class="note"><h3>Type</h3><p class="spec" style="font-family:'Josefin Sans';font-weight:600">Defias fields <small style="font-weight:400">Defias Trapper 9/15</small></p><p>Josefin Sans throughout. Its geometric, slightly old-world shapes suit the chart without needing a display face.</p></div>
+    <div class="note"><h3>Building it in WoW</h3><p>Star positions come straight from each step's goto coordinates. Stars and lines are textures inside a circular mask.</p><p><strong>Effort:</strong> moderate.</p></div>
+  </div>
+</div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>Mockups are drawn at 1280 × 720. Use Full screen on any of them to see it at size.</p>
+    <p>Every typeface here is open-licensed, so any of them can ship inside the addon as a TTF. The landscape and HUD are stand-ins drawn for this page, not game art.</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* scene and stand-in HUD in every mockup */
+  const SCENE = '<svg class="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#scene" width="1600" height="900"/></svg>';
+  const CHROME = '<div class="chrome" aria-hidden="true">'
+    + '<div class="uf"><div class="uf-port"></div><div class="uf-info"><div class="uf-name"><span>Bramblehorn</span><span>13</span></div><div class="uf-bar hp"><i></i></div><div class="uf-bar mp"><i></i></div></div></div>'
+    + '<div class="mm"><div class="mm-zone">Westfall</div><div class="mm-disc"><i></i></div></div>'
+    + '<div class="bars"><div class="bar-row">' + '<i></i>'.repeat(12) + '</div><div class="xp"><i></i></div></div>'
+    + '</div>';
+  $$('.screen').forEach(s => s.insertAdjacentHTML('afterbegin', SCENE + CHROME));
+
+  /* scale each 1280x720 screen into its stage */
+  const fit = st => {
+    const sc = $('.screen', st);
+    const W = st.clientWidth, H = st.clientHeight;
+    const s = Math.min(W / 1280, H / 720);
+    sc.style.transform = `translate(${(W - 1280 * s) / 2}px, ${(H - 720 * s) / 2}px) scale(${s})`;
+  };
+  const ro = new ResizeObserver(es => es.forEach(e => fit(e.target)));
+  $$('.stage').forEach(st => ro.observe(st));
+
+  /* full screen */
+  $$('.fs-btn').forEach(b => {
+    if (!document.fullscreenEnabled) { b.hidden = true; return; }
+    b.addEventListener('click', () => {
+      const st = b.closest('.stage');
+      if (document.fullscreenElement) document.exitFullscreen(); else st.requestFullscreen();
+    });
+  });
+  document.addEventListener('fullscreenchange', () => {
+    $$('.fs-btn').forEach(b => { b.textContent = document.fullscreenElement === b.closest('.stage') ? 'Exit full screen' : 'Full screen'; });
+  });
+
+  /* lineup: each design's waypoint marker over the same sky */
+  $$('.tile').forEach(t => {
+    const art = $('.tile-art', t);
+    art.insertAdjacentHTML('afterbegin', '<svg class="tile-scene" viewBox="320 0 960 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#scene" width="1600" height="900"/></svg>');
+    const src = $(`#c${t.dataset.id} [data-emblem]`);
+    if (!src) return;
+    const c = src.cloneNode(true);
+    c.removeAttribute('data-emblem');
+    c.setAttribute('aria-hidden', 'true');
+    const emb = document.createElement('div');
+    emb.className = 'tile-emb';
+    emb.append(c);
+    art.append(emb);
+  });
+
+  /* starfield */
+  let seed = 11;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  $$('.st-bg').forEach(g => {
+    let html = '';
+    for (let i = 0; i < 48; i++) {
+      const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd()) * 110;
+      html += `<circle cx="${(125 + Math.cos(a) * r).toFixed(1)}" cy="${(125 + Math.sin(a) * r).toFixed(1)}" r="${(rnd() * .9 + .3).toFixed(2)}" opacity="${(rnd() * .5 + .15).toFixed(2)}"/>`;
+    }
+    g.innerHTML = html;
+  });
+
+  /* pips and tally drums */
+  const paintPips = (el, n, bump) => {
+    const total = +el.dataset.total;
+    if (el.childElementCount !== total) el.innerHTML = '<i></i>'.repeat(total);
+    [...el.children].forEach((p, i) => {
+      p.classList.toggle('on', i < n);
+      p.classList.remove('new');
+      if (bump && i === n - 1) { void p.offsetWidth; p.classList.add('new'); }
+    });
+  };
+  const paintTally = (el, n) => {
+    const drums = $('.drums', el);
+    if (!drums.childElementCount) {
+      const strip = '<span class="drum"><span class="strip">' + [...'0123456789'].map(d => `<span>${d}</span>`).join('') + '</span></span>';
+      drums.innerHTML = strip + strip;
+      drums.setAttribute('aria-hidden', 'true');
+    }
+    const s = String(n).padStart(2, '0');
+    $$('.strip', el).forEach((st, i) => st.style.setProperty('--d', s[i]));
+  };
+  $$('[data-pips-static]').forEach(el => paintPips(el, +el.dataset.pipsStatic));
+  $$('[data-tally-static]').forEach(el => paintTally(el, +el.dataset.tallyStatic));
+
+  /* the shared objective: Defias Trappers */
+  const MAX = 15, START = 9;
+  let trap = START;
+  const kill = $('#kill'), reset = $('#reset'), live = $('#live');
+  const paint = bump => {
+    root.style.setProperty('--trap', (trap / MAX).toFixed(4));
+    $$('[data-bind="trap"]').forEach(e => { e.textContent = trap; });
+    $$('[data-pips="trap"]').forEach(e => paintPips(e, trap, bump));
+    $$('[data-tally="trap"]').forEach(e => paintTally(e, trap));
+    $$('[data-obj="trap"]').forEach(e => {
+      e.classList.toggle('is-complete', trap >= MAX);
+      e.classList.remove('bump');
+      if (bump) { void e.getBoundingClientRect(); e.classList.add('bump'); }
+    });
+    kill.disabled = trap >= MAX;
+    kill.textContent = trap >= MAX ? 'Defias Trappers done' : 'Kill a Defias Trapper';
+    reset.disabled = trap === START;
+  };
+  kill.addEventListener('click', () => {
+    if (trap >= MAX) return;
+    trap++;
+    paint(true);
+    live.textContent = `Defias Trapper slain, ${trap} of 15`;
+  });
+  reset.addEventListener('click', () => {
+    trap = START;
+    paint(false);
+    live.textContent = 'Back to 9 of 15';
+  });
+  paint(false);
+
+  /* backdrop */
+  $$('[data-scene-btn]').forEach(b => b.addEventListener('click', () => {
+    document.body.dataset.scene = b.dataset.sceneBtn;
+    $$('[data-scene-btn]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  }));
+
+  /* 1: class colour */
+  $$('[data-class]').forEach(b => b.addEventListener('click', () => {
+    const c = b.dataset.color;
+    $$('.c1').forEach(el => el.style.setProperty('--cls', c));
+    $$('[data-class]').forEach(x => x.setAttribute('aria-pressed', x === b));
+    $('#c1-sw').style.setProperty('--c', c);
+    $('#c1-sw-name').textContent = 'Your class: ' + b.dataset.class;
+    $('#c1-sw-hex').textContent = c;
+  }));
+
+  /* 4: play the next card */
+  const deck = $('[data-deck]');
+  let order = $$('.card', deck);
+  const assign = skip => order.forEach((c, i) => {
+    if (c === skip) return;
+    c.classList.remove('pos-0', 'pos-1', 'pos-2', 'pos-3');
+    c.classList.add('pos-' + i);
+    c.setAttribute('aria-hidden', i === 0 ? 'false' : 'true');
+  });
+  assign();
+  $('#play-card').addEventListener('click', () => {
+    const front = order[0];
+    if (front.classList.contains('played')) return;
+    order.push(order.shift());
+    front.classList.add('played');
+    assign(front);
+    $('#deck-status').textContent = `Step ${order[0].dataset.step} face up`;
+    setTimeout(() => {
+      front.classList.add('no-anim');
+      front.classList.remove('played', 'pos-0', 'pos-1', 'pos-2');
+      front.classList.add('pos-3');
+      front.setAttribute('aria-hidden', 'true');
+      void front.offsetWidth;
+      front.classList.remove('no-anim');
+    }, reduced() ? 0 : 420);
+  });
+
+  /* 6: full step list */
+  const wind = $('.screen.c6');
+  $$('[data-drawer]').forEach(b => b.addEventListener('click', () => {
+    const open = !wind.classList.contains('drawer-open');
+    wind.classList.toggle('drawer-open', open);
+    $$('[data-drawer]').forEach(x => x.setAttribute('aria-pressed', open));
+  }));
+
+  /* 9: faction */
+  $$('[data-faction-btn]').forEach(b => b.addEventListener('click', () => {
+    $$('.c9').forEach(el => { el.dataset.faction = b.dataset.factionBtn; });
+    $$('[data-faction-btn]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  }));
+
+  /* shortlist */
+  const KEY = 'goatquest-shortlist';
+  const names = {};
+  $$('.shortlist').forEach(b => { names[b.dataset.id] = b.dataset.name; });
+  let picks;
+  try { picks = new Set(JSON.parse(localStorage.getItem(KEY) || '[]')); } catch { picks = new Set(); }
+  const listText = () => [...picks].map(Number).sort((a, b) => a - b).map(id => `${id} ${names[id]}`);
+  const paintSL = () => {
+    $$('.shortlist').forEach(b => {
+      const on = picks.has(b.dataset.id);
+      b.setAttribute('aria-pressed', on);
+      $('span', b).textContent = on ? 'Shortlisted' : 'Shortlist';
+    });
+    $$('.tile').forEach(t => t.classList.toggle('picked', picks.has(t.dataset.id)));
+    const list = listText();
+    $('#sl-summary').textContent = list.length ? 'Shortlist: ' + list.join(', ') : 'Shortlist is empty';
+    $('#sl-copy').disabled = !list.length;
+    try { localStorage.setItem(KEY, JSON.stringify([...picks])); } catch {}
+  };
+  $$('.shortlist').forEach(b => b.addEventListener('click', () => {
+    picks.has(b.dataset.id) ? picks.delete(b.dataset.id) : picks.add(b.dataset.id);
+    paintSL();
+  }));
+  $('#sl-copy').addEventListener('click', async () => {
+    const text = 'GoatQuest shortlist: ' + listText().join(', ');
+    const btn = $('#sl-copy');
+    try { await navigator.clipboard.writeText(text); }
+    catch {
+      const ta = Object.assign(document.createElement('textarea'), { value: text });
+      document.body.append(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    }
+    btn.textContent = 'Copied';
+    setTimeout(() => { btn.textContent = 'Copy shortlist'; }, 1600);
+  });
+  paintSL();
+})();
+</script>
+</body>
+</html>

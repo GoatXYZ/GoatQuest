@@ -1,0 +1,5 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<!-- Season of Discovery uses a separate world and guide catalogue.
+	     GoatQuest targets Forever; keep these unused files off the login load path. -->
+</Ui>

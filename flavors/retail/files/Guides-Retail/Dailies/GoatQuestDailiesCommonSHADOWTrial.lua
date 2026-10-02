@@ -1,0 +1,26 @@
+local GoatQuest=GoatQuest
+if not GoatQuest then return end
+if GQ:DoMutex("DailiesCSHADOW") then return end
+GoatQuest.GuideMenuTier = "TRI"
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Ardenweald World Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Bastion World Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Maldraxxus World Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\The Maw World Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Revendreth World Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Zereth Mortis World Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Ve'nari Daily Quests (The Maw)")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Kyrian Covenant\\Kyrian Daily Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Necrolords Covenant\\Necrolord Daily Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Night Fae Covenant\\Night Fae Daily Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Night Fae Covenant\\Fungal Terminus Daily Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Venthyr Covenant\\Venthyr Daily Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Kyrian Covenant\\Kyrian Anima Conductor Daily Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Necrolords Covenant\\Necrolords Anima Conductor Daily Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Night Fae Covenant\\Night Fae Anima Conductor Daily Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Venthyr Covenant\\Venthyr Anima Conductor Daily Quests")
+GQ.BETASTART()
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Necrolords Covenant\\Necrolords Abomination Factory Weekly Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Night Fae Covenant\\Night Fae Queen's Conservatory Daily Quests")
+GQ.BETAEND()
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Chains of Domination\\Korthia Daily Quests")
+GoatQuest:RegisterGuidePlaceholder("Daily Guides\\Shadowlands (50-70)\\Eternity's End\\Zereth Mortis Daily Quests")

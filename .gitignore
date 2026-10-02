@@ -1,0 +1,18 @@
+# Generated workspaces and personal runtime state
+/build/
+/dist/
+Licence.lua
+License.lua
+SavedVariables/
+WTF/
+.env
+.env.*
+*.key
+*.pem
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.log
+*.bak
+*.zip

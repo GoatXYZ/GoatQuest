@@ -1,0 +1,72 @@
+# Personal guide subscription keys. Licence.lua is loaded at runtime (see LICENCE-USAGE.md)
+# and refreshed by tools/refresh_licence.py, but must never be committed or packaged.
+/Licence.lua
+/License.lua
+
+# WoW client state and character/account data (never addon source).
+/WTF/
+/Cache/
+/Logs/
+/Screenshots/
+SavedVariables/
+*.lua.bak
+
+# Local credentials and environment overrides.
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+
+# Release packaging and generated build output.
+/.release/
+/build/
+/dist/
+/releases/
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.luac
+
+# Python verification tools: environments, caches and coverage output.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local backups, agent artifacts and temporary files.
+/GUIDE-COMPARISON-LOCAL.md
+/.codex/
+/.codex-backups/
+/GoatQuest-Backups/
+/backups/
+/tmp/
+/temp/
+*.bak
+*.old
+*.orig
+*.rej
+*.tmp
+*.log
+*~
+
+# Personal editor settings and operating-system metadata.
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# Keep runtime Lua/XML/TOC files, bundled libraries, artwork/fonts, tests,
+# attribution notices and GitHub workflow/package configuration in source control.
